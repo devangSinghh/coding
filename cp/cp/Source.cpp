@@ -13,10 +13,16 @@ useful vector STL functions ::
 	v.find(begin(v), end(v), x);
 	v.erase(begin(v) + start, begin(s) + end); erase between (start, end)
 	unique(begin(v), end(v)); remove duplicates in vector
-	sort(begin(v), end(v));
+	sort(begin(v), end(v)); //sorts in ascending order
+	sort(begin(v), end(v), greater<>()); //sorts in descending order
 	is_sorted_until(begin(v), end(v)); //returns the first **number(not index)** which is not sorted;
 	is_sorted_until(begin(v), end(v), greater<>()); //returns the first **number(not index)** which is not sorted in descending order;
 	is_sorted(begin(v), end(v)); checks if vector is sorted or not
+	upper_bound(begin(v), end(v))
+	lower_bound(begin(v), end(v))
+
+	accumulate(begin(v), end(v), 0); gives sum of elements of array from begin to end . 3rd parameter is the sum starting value
+	distance(begin(v), it) gives distance between any 2 iterators of a vector/string
 
 */
 
@@ -41,6 +47,7 @@ ListNode* mergeTwoLists(ListNode* a, ListNode* b) {
 
 
 int main() {
-	vector<int>v = { 1, 1, 2 };
+	vector<int>v = { 1, 2, 3, 4, 5 };
+	rotateArrayAntiClockwise(v, 2);
 	return 0;
 }

@@ -1,9 +1,4 @@
-#include<iostream>
-#include<algorithm>
-#include<vector>
-#include<string>
-#include<math.h>
-#include "strings.h"
+#include "allheaders.h"
 
 using namespace std;
 

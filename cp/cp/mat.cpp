@@ -1,9 +1,4 @@
-#include<iostream>
-#include<algorithm>
-#include<vector>
-#include<math.h>
-#include "matrix.h"
-
+#include "allheaders.h"
 using namespace std;
 
 void print2dVector(vector<vector<int>> v) {

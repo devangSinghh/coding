@@ -129,6 +129,7 @@
     <ClCompile Include="string.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="allheaders.h" />
     <ClInclude Include="array.h" />
     <ClInclude Include="matrix.h" />
     <ClInclude Include="strings.h" />
