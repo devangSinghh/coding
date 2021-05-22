@@ -1,12 +1,26 @@
+Contests
+https://codeforces.com/contest/1527/standings
+
+https://codeforces.com/gym/328759/problem/A
+https://codeforces.com/gym/328759/problem/B
+https://codeforces.com/gym/328759/problem/C
+https://codeforces.com/gym/328759/problem/D
+https://codeforces.com/gym/328759/problem/E
+
+
+Array
+
 Dynamic programming questions
 
 https://leetcode.com/problems/best-time-to-buy-and-sell-stock-with-cooldown/
 https://leetcode.com/problems/best-time-to-buy-and-sell-stock-with-transaction-fee/
 https://leetcode.com/problems/can-i-win/
 https://leetcode.com/problems/regular-expression-matching/
+https://leetcode.com/problems/count-submatrices-with-all-ones/
+https://leetcode.com/problems/cheapest-flights-within-k-stops/
 
-Backtracking
+Tree
 
-Binary Search
+Graph
 
-Hashing
+String
