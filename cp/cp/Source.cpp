@@ -44,7 +44,20 @@ ListNode* mergeTwoLists(ListNode* a, ListNode* b) {
 	return a;
 }
 
-
+int Unboundedknapsack(vector<int>& weights, vector<int>& values, int capacity) {
+    int n= weights.size();
+    int dp[capacity+1];
+    memset(dp,0,sizeof(dp));
+    for(int i=0;i<=capacity;i++){
+        for(int j=0;j<n;j++){
+            if(weights[j]<=i){
+               dp[i]=max(dp[i],values[j]+dp[i-weights[j]]);
+            }
+            
+        }
+    }
+    return dp[capacity];
+}
 
 int main() {
 	vector<int>v = { 1, 2, 3, 4, 5 };
