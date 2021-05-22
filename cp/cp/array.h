@@ -4,6 +4,7 @@
 #ifndef _ARRAY_
 #define _ARRAY_
 
+extern bool getParity(unsigned int n, bool parity = 0);
 extern int findOddOccuringNumber(std::vector<int>v);
 extern int kadane(std::vector<int>v);
 extern std::vector<int> primesBeforeN(int n);
@@ -16,6 +17,12 @@ extern int threeSumClosest(std::vector<int>v, int target);
 extern void nextPermutation(std::vector<int>v);
 extern void rotateArrayAntiClockwise(std::vector<int>v, int k);
 extern void rotateArrayClockwise(std::vector<int>v, int k);
-extern void rotateArrayOneLiner(std::vector<int>, int k);
+extern void rotateArrayOneLiner(std::vector<int>v, int k);
+extern int combinationsInArrayAddingToTarget(std::vector<int>v, int target);
+extern std::vector<int>kthRowOfPascalTraingle(int k);
+extern int numberOfPathsInMatrix(int row, int col);
+extern int lenLongestFibSubseq(std::vector<int>A);
+extern int numMatchingSubseq(std::string, std::vector<int>words);
+
 
 #endif
