@@ -34,6 +34,10 @@ void print(vector<int>A) {
 	for (auto x : A) cout << x << " ";
 }
 
+int gcd(int a, int b) {
+	return b == 0 ? a : gcd(b, a%b);
+}
+
 //print a 2D vector
 void print2DVector(vector<vector<int>>mat) {
 	for (auto &i : mat) {
@@ -303,7 +307,7 @@ void backTracking(vector<int>&res, vector<int>&temp, vector<int>&A, int target, 
 		for (int i = s; i < A.size(); i++) {
 			//if (i > s && A[i] == A[i - 1]) continue;
 			temp.push_back(A[i]);
-			bt(res, temp, A, target - A[i], i + 1);
+			backTracking(res, temp, A, target - A[i], i + 1);
 			temp.pop_back();
 		}
 	}

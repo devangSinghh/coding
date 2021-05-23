@@ -4,6 +4,7 @@
 #ifndef _ARRAY_
 #define _ARRAY_
 
+extern int gcd(int a, int b);
 extern bool getParity(unsigned int n, bool parity = 0);
 extern int findOddOccuringNumber(std::vector<int>v);
 extern int kadane(std::vector<int>v);
