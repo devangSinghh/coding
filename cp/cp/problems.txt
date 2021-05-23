@@ -15,6 +15,7 @@ Dynamic programming questions
 https://leetcode.com/problems/best-time-to-buy-and-sell-stock-with-cooldown/
 https://leetcode.com/problems/best-time-to-buy-and-sell-stock-with-transaction-fee/
 https://leetcode.com/problems/can-i-win/
+https://leetcode.com/problems/regular-expression-matching/
 https://leetcode.com/problems/count-submatrices-with-all-ones/
 https://leetcode.com/problems/cheapest-flights-within-k-stops/
 
