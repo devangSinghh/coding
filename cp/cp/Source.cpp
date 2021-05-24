@@ -38,6 +38,19 @@ int Unboundedknapsack(vector<int>& weights, vector<int>& values, int capacity) {
     }
     return dp[capacity];
 }
+
+void tower_of_hanoi(int n,char a,char b, char c){
+    if(n==1){
+        cout<<a<<" "<<c<<endl;
+        return;
+    }
+    tower_of_hanoi(n-1,a,c,b);
+    cout<<a<<" "<<c<<endl;
+    tower_of_hanoi(n-1,b,a,c);
+    return;
+    
+}
+
 int main() {
 	ios_base::sync_with_stdio(false);
 	cin.tie(NULL);

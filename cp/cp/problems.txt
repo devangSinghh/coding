@@ -24,3 +24,6 @@ Tree
 Graph
 
 String
+
+Binary Search
+https://leetcode.com/problems/koko-eating-bananas/
