@@ -27,3 +27,4 @@ String
 
 Binary Search
 https://leetcode.com/problems/koko-eating-bananas/
+https://practice.geeksforgeeks.org/problems/trapping-rain-water-1587115621/1
