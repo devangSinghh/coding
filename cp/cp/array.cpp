@@ -34,16 +34,17 @@ void print(vector<int>A) {
 	for (auto x : A) cout << x << " ";
 }
 
-int gcd(int a, int b) {
-	return b == 0 ? a : gcd(b, a%b);
-}
-
 //print a 2D vector
 void print2DVector(vector<vector<int>>mat) {
 	for (auto &i : mat) {
 		for (auto x : i) cout << x << " ";
 		cout << "\n";
 	}
+}
+
+void printPair(vector<pair<int, int>>v) {
+	for (auto pair : v)
+		cout << pair.first << " " << pair.second << "\n";
 }
 
 //get parity of number 
@@ -78,7 +79,7 @@ vector<int> primesBeforeN(int n) {
 		isPrime[i] = true;
 
 	for (int i = 0; i*i < n; i++) {
-		if (!isPrime[i]) continue;
+		if (!isPrime[i]) continue; //only finding composite numbers
 		for (int j = i * i; j < n; j+=i) {
 			isPrime[j] = false;
 		}
@@ -220,26 +221,6 @@ vector<int>kthRowOfPascalTraingle(int k) {
 }
 
 
-/*
-Given an array nums of integers, return the length of the longest arithmetic subsequence in nums.
-subsequence of an array nums is a list nums[i1], nums[i2], ..., nums[ik] with 0 <= i1 < i2 < ... < ik <= nums.length - 1, 
-and that a sequence 'seq' is arithmetic if seq[i+1] - seq[i] are all the same value (for 0 <= i < seq.length - 1)
-for eg . [20, 1, 15, 3, 10, 5, 8] => [20, 15, 10, 5] (ans)
-for eg . [9, 4, 7, 2, 10] => [4, 7, 10]
-for eg . [3, 6, 9, 12] => [3, 6, 9, 12]
-*/
-int longestArithSeqLength(vector<int>& A) {
-	int n = A.size(), ans = 0;
-	vector<vector<int>>dp(n, vector<int>(2000, 0));
-	for (int i = 0; i < n; i++) {
-		for (int j = i + 1; j < n; j++) {
-			int d = A[j] - A[i] + 1000;
-			dp[j][d] = max(dp[i][d] + 1, 2);
-			ans = max(ans, dp[j][d]);
-		}
-	}
-	return ans;
-}
 
 
 //number of paths from (0,0) to end of matrix
@@ -250,20 +231,6 @@ int numberOfPathsInMatrix(int m, int n) {
 		path /= (i - n + 1);
 	}
 	return path;
-}
-
-
-int coinChange(vector<int>& coins, int amount) {
-	vector<int> need(amount + 1, amount + 1);
-	need[0] = 0;
-	for (int c : coins) {
-		for (int a = c; a <= amount; a++) {
-			need[a] = min(need[a], need[a - c] + 1);
-			cout << need[a] << " ";
-		}
-		cout << "\n";
-	}
-	return need.back() > amount ? -1 : need.back();
 }
 
 int combinationSum4(vector<int>& A, int target) {
@@ -313,35 +280,6 @@ void backTracking(vector<int>&res, vector<int>&temp, vector<int>&A, int target, 
 	}
 }
 
-
-//longest fibonacci type subsequence
-int lenLongestFibSubseq(vector<int> A) {
-	int n = A.size(), index = 0, maxLen = 0;
-
-	if (n < 3) return 0;
-
-	vector<vector<int>>dp(n + 1, vector<int>(n + 1, 0));
-	unordered_map<int, int>u;
-
-	for (int i = 0; i < n; i++) u[A[i]] = i; //populate the map 
-
-	for (int i = 0; i < n; i++) {
-		for (int j = i + 1; j < n; j++) {
-			int k = A[j] - A[i]; //find a number k such that k + A[i] = A[j]  ...and index of k should be smaller than i
-
-			auto it = u.find(k); // find for k in map
-			if (it != u.end()) index = u[k]; //if k exists store it's index in 'index'
-			else index = -1; //if k is not found then index = -1
-
-			if (index != -1 && index < i) { //check if k is present and its index is less than i
-				dp[i][j] = max(dp[i][j], dp[index][i] + 1); //new dp will be either sum of previous one which was (index, i) => because these 2 sum upto A[j, or current one..max of 2
-				maxLen = max(maxLen, dp[i][j]);
-			}
-		}
-	}
-
-	return maxLen == 0 ? 0 : maxLen + 2; 
-}
 
 //Given a string s and an array of strings words, return the number of words[i] that is a subsequence of s
 int numMatchingSubseq(string s, vector<string> words) {

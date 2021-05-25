@@ -13,6 +13,7 @@ extern std::vector<int> subarrayBitWiseOr(std::vector<int>v);
 extern std::pair<int, int>twoSum(std::vector<int>v, int target);
 extern std::vector<std::vector<int>>threeSum(std::vector<int>v, int target);
 extern void print2DVector(std::vector<std::vector<int>>v);
+extern void printPair(std::vector<std::pair<int, int>>v);
 extern void print(std::vector<int>v);
 extern int threeSumClosest(std::vector<int>v, int target);
 extern void nextPermutation(std::vector<int>v);

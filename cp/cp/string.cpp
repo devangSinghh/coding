@@ -115,3 +115,10 @@ bool searchWord(vector<vector<char>>board, string word) {
 		return false;
 }
 
+
+int titleToNumber(string A) {
+	int n = A.size(), sum = 0;
+	for (int i = 0; i < n; i++)
+		sum += pow(26, n - 1 - i)*(A[i] - 'A' + 1);
+	return sum;
+}

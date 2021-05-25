@@ -124,8 +124,11 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="array.cpp" />
+    <ClCompile Include="cf-contests.cpp" />
+    <ClCompile Include="dp.cpp" />
     <ClCompile Include="lists.cpp" />
     <ClCompile Include="mat.cpp" />
+    <ClCompile Include="maths.cpp" />
     <ClCompile Include="Source.cpp" />
     <ClCompile Include="string.cpp" />
   </ItemGroup>

@@ -9,6 +9,10 @@ https://codeforces.com/gym/328759/problem/E
 
 
 Array
+https://leetcode.com/problems/first-missing-positive/
+
+Greedy
+https://leetcode.com/problems/broken-calculator/
 
 Dynamic programming questions
 
@@ -18,6 +22,8 @@ https://leetcode.com/problems/can-i-win/
 https://leetcode.com/problems/regular-expression-matching/
 https://leetcode.com/problems/count-submatrices-with-all-ones/
 https://leetcode.com/problems/cheapest-flights-within-k-stops/
+
+https://leetcode.com/problems/stone-game/
 
 Tree
 
