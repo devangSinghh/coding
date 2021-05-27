@@ -87,7 +87,7 @@ void grayCode(int n) {
 		cout << "number : " << (i ^ (i >> 1)) << " ";
 		string k = bitset<16>(i ^ (i >> 1)).to_string();
 		k.erase(begin(k), begin(k) + 16 - n);
-		cout << "gry code : " << k << "\n";
+		cout << "gray code : " << k << "\n";
 	}
 }
 

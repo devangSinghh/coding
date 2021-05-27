@@ -32,6 +32,7 @@ __builtin_ctz(n) => This function is used to count the trailing zeros of the giv
 //print a vector
 void print(vector<int>A) {
 	for (auto x : A) cout << x << " ";
+	cout << "\n";
 }
 
 //print a 2D vector
@@ -109,6 +110,19 @@ vector<int>subarrayBitWiseOr(vector<int>A) {
 	}
 	return v;
 }
+
+
+void tower_of_hanoi(int n, char a, char b, char c) {
+	if (n == 1) {
+		cout << a << " " << c << endl;
+		return;
+	}
+	tower_of_hanoi(n - 1, a, c, b);
+	cout << a << " " << c << endl;
+	tower_of_hanoi(n - 1, b, a, c);
+	return;
+}
+
 
 
 //given a target, find 2 numbers in array(not equal) whoose sum is equal to target, assuming that solution exists.
