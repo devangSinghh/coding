@@ -10,6 +10,8 @@ https://codeforces.com/gym/328759/problem/E
 
 Array
 https://leetcode.com/problems/first-missing-positive/
+https://leetcode.com/problems/max-consecutive-ones-iii/
+https://practice.geeksforgeeks.org/problems/skip-the-work5752/1
 
 Greedy
 https://leetcode.com/problems/broken-calculator/
