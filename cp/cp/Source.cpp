@@ -28,6 +28,33 @@ void solve() {
 	int a;
 }
 
+vector<int> countBits(int n) {//dp implementation to count number of 1's in a biary repesentation of a number
+    vector<int> res;
+    res.push_back(0);
+    if (n == 0) {
+        return res;
+    }
+    res.push_back(1);
+    for (int k = 2; k <= n; k++) {
+        if (k % 2 == 0) {
+            res.push_back(res[k / 2]);
+        }
+        else {
+            res.push_back(res[k / 2] + 1);
+        }
+    }
+    return res;
+}
+
+int EachcountBits(int n) {// count number of 1's in a biary repesentation of a number
+    int count = 0;
+    while (n) {
+        n = n & (n - 1);
+        count++;
+    }
+    return count;
+}
+
 int Unboundedknapsack(vector<int>& weights, vector<int>& values, int capacity) {
     int n= weights.size();
     int dp[capacity+1];
