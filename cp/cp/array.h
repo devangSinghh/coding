@@ -3,7 +3,9 @@
 #include<algorithm>
 #ifndef _ARRAY_
 #define _ARRAY_
-typedef std::vector<int>  vi;
+
+typedef std::vector<int> vi;
+//typedef std::vector<vector<int>> vii;
 typedef std::pair<int, int>  pi;
 typedef std::string string;
 
@@ -32,4 +34,14 @@ extern int knapsackRecursive(vi profit, vi weights, int capacity, int index);
 extern int knapsackBottomUp(vi profit, vi weights, int capacity);
 extern int knapsackTopDown(vi profit, vi weights, int capacity);
 extern int fractionalKnapSack(vi profit, vi weights, int capacity);
+extern bool canMakeEqualSubSets(vi A, int sum , int index);
+extern bool canMakeEqualSubSetsTopDown(std::vector<vi> dp, vi A, int sum, int index);
+extern bool canPartition(vi v);
+extern bool canPartitionBottomUp(vi A);
+extern bool canFindSubSetWithSumS(vi A, int s);
+extern int arithmaticSlices(vi A);
+extern std::vector<pi>activitySelection(vi start, vi duration);
+extern void egyptianFraction(int nr, int dr);
+extern int totalShopsVisited(vi arr, vi endT, int k);
+extern int shortestPathinMatrix(std::vector<std::vector<int>> mat);
 #endif

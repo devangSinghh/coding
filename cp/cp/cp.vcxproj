@@ -126,6 +126,8 @@
     <ClCompile Include="array.cpp" />
     <ClCompile Include="cf-contests.cpp" />
     <ClCompile Include="dp.cpp" />
+    <ClCompile Include="graph.cpp" />
+    <ClCompile Include="greedy.cpp" />
     <ClCompile Include="lists.cpp" />
     <ClCompile Include="mat.cpp" />
     <ClCompile Include="maths.cpp" />
@@ -135,6 +137,7 @@
   <ItemGroup>
     <ClInclude Include="allheaders.h" />
     <ClInclude Include="array.h" />
+    <ClInclude Include="graph.h" />
     <ClInclude Include="matrix.h" />
     <ClInclude Include="strings.h" />
   </ItemGroup>

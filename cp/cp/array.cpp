@@ -29,6 +29,8 @@ __builtin_ctz(n) => This function is used to count the trailing zeros of the giv
  f[n] = f[n / 2] + i % 2 , count number of 1s in bit of a number
 */
 
+
+
 //print a vector
 void print(vector<int>A) {
 	for (auto x : A) cout << x << " ";
@@ -62,6 +64,13 @@ int findOddOccuringNumber(vector<int>v) {
 	int n = v.size(), res = 0;
 	for (auto x : v) res ^= x;
 	return res;
+}
+
+//given day, month, year find weekday 
+int sakamoto(int y, int month, int day) {
+	static int t[] = { 0, 3, 2, 5, 0, 3, 5, 1, 4, 6, 2, 4 };
+	y -= month < 3;
+	return (y - y / 4 - y / 100 + y / 400 + t[month - 1] + day) % 7;
 }
 
 //kadane algorithm on array
@@ -318,6 +327,69 @@ int numMatchingSubseq(string s, vector<string> words) {
 int fib(int n) {
 	double phi = (1 + sqrt(n)) / 2;
 	return round(pow(phi, n) / sqrt(5));
+}
+
+//the number of sub-arrays with odd sum
+int oddSumSubArrays(vector<int>A) {
+	int n = A.size(), odd = 0, even = 0, ans = 0, mod = 1e9+7;
+	for (auto n : A) {
+		if (n % 2 == 0)
+			even++;
+		else
+			swap(odd, even), odd++;
+		ans = (ans + odd) % mod;
+	}
+	return ans;
+}
+
+//https://leetcode.com/problems/arithmetic-slices/
+//An integer array is called arithmetic if it consists of at least three elements 
+//and the difference between any two consecutive elements is the same.
+//find number of arithmatic subarrays of any array for eg. [1, 2, 3, 4] => 3 arithmatic aubarrays which are => [1, 2, 3], [2, 3, 4], [1, 2, 3, 4]
+int arithmaticSlices(vector<int> A) {
+	int n = A.size(), curr = 0, sum = 0;
+	for (int i = 2; i < n; i++) {
+		if (long(A[i]) - A[i - 1] == (long)(A[i - 1]) - A[i - 2])
+			curr++, sum += curr;
+		else
+			curr = 0;
+	}
+	return sum;
+}
+
+//An integer array is called arithmetic if it consists of at least three elements 
+//and the difference between any two consecutive elements is the same.
+//find number of arithmatic **subsequences** of any array 
+//int arithmaticSlices2(vector<int> A) {
+//	int ans = 0;
+//	static int n = A.size();
+//	unordered_map<long long, int>u;
+//	u.reserve[n];
+//
+//	for (int i = 0; i < n; i++) {
+//		for (int j = 0; j < i; j++) {
+//			long long diff = (long)A[i] - A[j];
+//			if (u[i].find(diff) != u[i].end()) {
+//				ans += u[j][diff];
+//				u[i][diff] += u[j][diff];
+//			}
+//			u[i][diff]++;
+//		}
+//	}
+//	return ans;
+//}
+
+
+//longest strictly increasing subsequence
+int longestIncreasingSubsequence(vector<int>A) {
+	auto m = begin(A);
+	for (auto n : A) {
+		auto it = lower_bound(begin(A), m, n);
+		*it = n;
+		if (it == m)
+			m++;
+	}
+	return m - begin(A);
 }
 
 namespace ARR {

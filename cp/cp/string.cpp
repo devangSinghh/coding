@@ -2,6 +2,11 @@
 
 using namespace std;
 
+void printVectorString(vector<string>s) {
+	for (auto c : s) cout << c << " ";
+	cout << "\n";
+}
+
 //if a string is palindrome
 bool checkPalindrome(string s) {
 	return equal(begin(s), end(s), rbegin(s));
@@ -121,4 +126,43 @@ int titleToNumber(string A) {
 	for (int i = 0; i < n; i++)
 		sum += pow(26, n - 1 - i)*(A[i] - 'A' + 1);
 	return sum;
+}
+
+vector<int>failureFunction(string w) {
+	int i = 0, j = 1, m = w.size();
+	vector<int>v(m);
+	v[0] = 0;
+	while (j < m)
+		if (w[i] == w[j])
+			i++, v[j++] = i;
+		else if (i == 0)
+			v[j++] = 0;
+		else
+			i = v[i - 1]; //mismatch --> baacktrack
+	return v;
+}
+
+//KMP algorithm for searching substring w, in string S in O(m + n) time
+bool kmpSearch(string w, string s) {
+	int i = 0, j = 0, m = w.size(), n = s.size();
+	vector<int>arr = failureFunction(w);
+	while (i < m and j < n) {
+		if (w[i] == s[j] and i == m - 1) //substring found
+			return true;
+		else if (w[i] == s[j])
+			i++, j++;
+		else
+			if (i != 0)
+				i = arr[i - 1];
+			else
+				j++;
+	}
+	return false;
+}
+
+//Given a string s, return the number of palindromic substrings in it.
+int countPalinDromeSubstrings(string s) {
+	int n = s.size();
+	if (n == 0) return 0;
+
 }

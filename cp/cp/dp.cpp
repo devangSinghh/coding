@@ -35,6 +35,25 @@ int coinChange(vector<int>& coins, int amount) {
 	return need.back() > amount ? -1 : need.back();
 }
 
+vector<int> countBits(int n) {//dp implementation to count number of 1's in a biary repesentation of a number
+	vector<int> res;
+	res.push_back(0);
+	if (n == 0) {
+		return res;
+	}
+	res.push_back(1);
+	for (int k = 2; k <= n; k++) {
+		if (k % 2 == 0) {
+			res.push_back(res[k / 2]);
+		}
+		else {
+			res.push_back(res[k / 2] + 1);
+		}
+	}
+	return res;
+}
+
+
 //longest fibonacci type subsequence
 int lenLongestFibSubseq(vector<int> A) {
 	int n = A.size(), index = 0, maxLen = 0;
@@ -198,4 +217,109 @@ int fractionalKnapSack(vector<int>profit, vector<int>weights, int capacity) {
 	}
 
 	return val;
+}
+
+
+bool canMakeEqualSubSets(vector<int>A, int sum , int index) {
+	int n = A.size();
+	if (sum & 1) return false;
+	if (sum == 0) return true;
+	if (index >= n or A.empty()) return false;
+
+	if (A[index] <= sum)
+		if (canMakeEqualSubSets(A, sum - A[index], index + 1))
+			return true;
+
+	return canMakeEqualSubSets(A, sum, index + 1);
+}
+
+bool canMakeEqualSubSetsTopDown(vector<vector<int>>dp, vector<int>A, int sum, int index) {
+	if (sum == 0) return true;
+	if (A.empty() or index >= A.size()) return false;
+
+	if (dp[index][sum] == -1) {
+		if (A[index] <= sum)
+			if (canMakeEqualSubSetsTopDown(dp, A, sum - A[index], index + 1)) {
+				dp[index][sum] = 1;
+				return true;
+			}
+	}
+
+	dp[index][sum] = canMakeEqualSubSetsTopDown(dp, A, sum, index + 1) ? 1 : 0;
+
+	return dp[index][sum] == 1 ? true : false;
+}
+
+//time : 462ms
+bool canPartitionBottomUp(vector<int>A) {
+	int n = A.size(), sum = accumulate(begin(A), end(A), 0);
+	if (sum & 1) return false;
+	sum /= 2;
+	vector<vector<bool>>dp(n, vector<bool>(sum + 1));
+	for (int i = 0; i < n; i++)
+		dp[i][0] = true;
+	for (int s = 1; s <= sum; s++) {
+		dp[0][s] = A[0] == s ? true : false;
+	}
+	for (int i = 1; i < n; i++) {
+		for (int s = 1; s <= sum; s++) {
+			if (dp[i - 1][s])
+				dp[i][s] = dp[i - 1][s];
+			else if (s >= A[i])
+				dp[i][s] = dp[i - 1][s - A[i]];
+		}
+	}
+	return dp[n - 1][sum];
+}
+
+//time : 12ms
+bool partitionUsingBits(vector<int>A) {	
+	bitset<10001>bits(1);
+	for (auto n : A) bits |= bits << n;
+	int sum = accumulate(begin(A), end(A), 0);
+	return !(sum % 2) and bits[sum >> 1];
+}
+
+bool canPartition(vector<int>A) {
+	int sum = accumulate(begin(A), end(A), 0);
+	if (sum % 2 != 0) return false;
+
+	vector<vector<int>>dp(A.size(), vector<int>(sum / 2 + 1, -1));
+	return canMakeEqualSubSetsTopDown(dp, A, sum / 2, 0);
+}
+
+
+//Given a set of positive numbers, determine if there exists a subset whose sum is equal to a given number ‘S’.
+bool canFindSubSetWithSumS(vector<int>A, int sum) {
+	int total = accumulate(begin(A), end(A), 0), n = A.size();
+	if (A.empty() or (total == 0 and sum != 0)) return false;
+	vector<vector<bool>>dp(n, vector<bool>(sum + 1));
+	for (int i = 0; i < n; i++)
+		dp[i][0] = true;
+	for (int j = 1; j <= sum; j++)
+		dp[0][j] = A[0] == j ? true : false;
+	for (int i = 1; i < n; i++) {
+		for (int s = 1; s <= sum; s++) {
+			if (dp[i - 1][s])
+				dp[i][s] = dp[i - 1][s];
+			else if (A[i] <= s)
+				dp[i][s] = dp[i - 1][s - A[i]];
+		}
+	}
+	return dp[n - 1][sum];
+}
+
+int shortestPathinMatrix(vector<vector<int>>mat) {
+	int m(mat.size()), n(mat[0].size());
+	vector<vector<int>>dp(m + 1, vector<int>(n + 1, mat[0][0]));
+	for (int i = 1; i < m; i++)
+		dp[0][i] += mat[0][i];
+	for (int j = 1; j < n; j++)
+		dp[j][0] += mat[j][0];
+	for (int i = 1; i < m; i++) {
+		for (int j = 1; j < n; j++) {
+			dp[i][j] = min(dp[i - 1][j], dp[i][j - 1]) + mat[i][j];
+		}
+	}
+	return dp[m-1][n-1];
 }
