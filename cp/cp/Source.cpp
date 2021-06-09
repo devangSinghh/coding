@@ -38,7 +38,11 @@ typedef unordered_map<int, int> umap;
 //void solve() {
 //	int a;
 //}
-
+void changesign(int n){
+	//Changes sign without multiplying -1
+	n=(~n+1);//~n makes the number n of opposite sign adn also have to add one to the number 
+	//eg->  ~321=320
+}
 
 
 int main() {
