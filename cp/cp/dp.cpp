@@ -323,3 +323,117 @@ int shortestPathinMatrix(vector<vector<int>>mat) {
 	}
 	return dp[m-1][n-1];
 }
+
+//Given an integer array nums, return the number of longest increasing subsequences.
+int findNumOfLongestIncreasingSubSequence(vector<int>A) {
+	int n = A.size(), maxLen = 0, ans = 0;
+	vector<pair<int, int>>dp(n, { 1, 1 }); //pair(count, length)
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j < i; j++) {
+			if (A[i] > A[j]) {
+				if (dp[i].second == dp[j].second + 1)
+					dp[i].first += dp[j].first;
+				else if (dp[i].second < dp[j].second + 1)
+					dp[i].second = dp[j].second + 1, dp[i].first = dp[j].first;
+			}
+		}
+		maxLen = max(maxLen, dp[i].second);
+	}
+
+	for (auto c : dp) {
+		if (c.second == maxLen) ans += c.first;
+	}
+	return ans;
+}
+
+//https://leetcode.com/problems/super-egg-drop/
+//https://leetcode.com/problems/egg-drop-with-2-eggs-and-n-floors/discuss/1248069/Recursive-Iterative-Generic
+int superEggDrop(int n, int K) {
+	vector<vector<int>>dp(n + 1, vector<int>(K + 1, 0));
+	int m = 0;
+	while (dp[m][K] < n) {
+		m++;
+		for (int k = 1; k <= K; k++) {
+			dp[m][k] = dp[m - 1][k - 1] + dp[m - 1][k] + 1;
+		}
+	}
+	return m;
+}
+
+//https://www.geeksforgeeks.org/bitmasking-and-dynamic-programming-set-1-count-ways-to-assign-unique-cap-to-every-person/
+//Count ways to assign unique cap to every person
+long long int waysToAssignCap(int mask, int i, unordered_map<int, vector<int>>capList, vector<vector<int>>dp, int allmask) {
+	if (mask == allmask) return 1;
+	if (i > 100) return 0;
+	if (dp[mask][i] != -1) return dp[mask][i]; //if solution already present
+	long long int ways = waysToAssignCap(mask, i + 1, capList, dp, allmask); //exculde current cap
+	int persons = capList[i].size(); //number of persons wearing cap with id of 'i'
+	for (int j = 0; j < persons; j++) {
+		if (mask & (1 << capList[i][j])) continue; //if jth person is already wearing cap continue
+		else
+			ways += waysToAssignCap(mask | (1 << capList[i][j]), i + 1, capList, dp, allmask);
+		ways %= (int)(1e9 + 7);
+	}
+	return dp[mask][i] = ways;
+}
+
+
+//https://leetcode.com/problems/cherry-pickup-ii/
+int CherryPickUpdp[70][70][70] = {};
+int dfs(vector<vector<int>>&A, int r, int c, int k, int m, int n) {
+	if (r == m) return 0; //if we reached at the bottom of matrix
+	if (CherryPickUpdp[r][c][k] != -1) return CherryPickUpdp[r][c][k];
+	int ans = 0;
+	for (int c1 = -1; c1 <= 1; c1++) // j-1, j, j + 1 => for robot 1
+		for (int c2 = -1; c2 <= 1; c2++) { // for robot 2
+			int nc = c + c1, nk = k + c2;
+			if (nc >= 0 and nc < n and nk < n and nk >= 0)
+				ans = max(ans, dfs(A, r + 1, nc, nk, m, n));
+		}
+
+	ans += c == k ? A[r][c] : A[r][c] + A[r][k];
+	return CherryPickUpdp[r][c][k] = ans;
+}
+int cherryPickup(vector<vector<int>>& A) {
+	memset(CherryPickUpdp, -1, sizeof(CherryPickUpdp));
+	int m = A.size(), n = A[0].size();
+	return dfs(A, 0, 0, n - 1, m, n);
+}
+
+//max sum of subsequence in array which is divisible by k
+int maxDivK(vector<int>A, int k) {
+	if (k == 0) return -1;
+	vector<int>dp(k, 0);
+	for (auto n : A) {
+		vector<int> temp = dp;
+		for (int i = 0; i < k; i++) {
+			dp[(n + temp[i]) % k] = max(dp[(n + temp[i]) % k], n + temp[i]);
+		}
+	}
+	return dp[0];
+}
+
+
+//https://leetcode.com/problems/minimum-difficulty-of-a-job-schedule/
+int dfsMinDifficultyJobSchedule(int d, int len, vector<int>&jobDifficulty, vector<vector<int>>&dp) {
+	int n = jobDifficulty.size();
+	if (d == 0 and len == n) return 0;
+	if (d == 0 or len == n) return INT_MAX;
+	if (dp[len][d] != -1) return dp[len][d];
+	int curMax = jobDifficulty[len];
+	int mn = INT_MAX;
+	for (int s = len; s < n; s++) {
+		curMax = max(curMax, jobDifficulty[s]);
+		int temp = dfsMinDifficultyJobSchedule(d - 1, s + 1, jobDifficulty, dp);
+		if (temp != INT_MAX)
+			mn = min(mn, temp + curMax);
+	}
+
+	return dp[len][d] = mn;
+}
+int minDifficulty(vector<int>& jobDifficulty, int d) {
+	int n = jobDifficulty.size();
+	if (n < d) return -1;
+	vector<vector<int>>dp(n, vector<int>(d + 1, -1));
+	return dfsMinDifficultyJobSchedule(d, 0, jobDifficulty, dp);
+}

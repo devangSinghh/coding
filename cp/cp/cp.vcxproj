@@ -124,6 +124,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="array.cpp" />
+    <ClCompile Include="backtracking.cpp" />
     <ClCompile Include="cf-contests.cpp" />
     <ClCompile Include="dp.cpp" />
     <ClCompile Include="graph.cpp" />
@@ -137,6 +138,7 @@
   <ItemGroup>
     <ClInclude Include="allheaders.h" />
     <ClInclude Include="array.h" />
+    <ClInclude Include="backtracking.h" />
     <ClInclude Include="graph.h" />
     <ClInclude Include="matrix.h" />
     <ClInclude Include="strings.h" />

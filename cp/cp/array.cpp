@@ -19,6 +19,9 @@ useful vector STL functions ::
 
 */
 
+/*
+https://leetcode.com/problems/sum-of-floored-pairs/discuss/1210025/Prefix-Sum-Fenwick-Tree-Sort-and-Sieve
+*/
 
 /*
 _builtin_popcount(n) => used to count the number of 1’s(set bits) in an integer
@@ -39,7 +42,7 @@ void print(vector<int>A) {
 
 //print a 2D vector
 void print2DVector(vector<vector<int>>mat) {
-	for (auto &i : mat) {
+	for (auto i : mat) {
 		for (auto x : i) cout << x << " ";
 		cout << "\n";
 	}
@@ -303,6 +306,23 @@ void backTracking(vector<int>&res, vector<int>&temp, vector<int>&A, int target, 
 	}
 }
 
+//https://leetcode.com/problems/sliding-window-maximum/submissions/
+vector<int>maximumSlidingWindow(vector<int>&A, int k) {
+	int n = A.size();
+	vector<int>res;
+	deque<int>dq;
+	for (int i = 0; i < n; i++) {
+		while (!dq.empty() and dq.back() < A[i])
+			dq.pop_back();
+		dq.push_back(A[i]);
+		if (i >= k - 1) {
+			res.push_back(dq.front());
+			if (A[i - k + 1] == dq.front())
+				dq.pop_front();
+		}
+	}
+	return res;
+}
 
 //Given a string s and an array of strings words, return the number of words[i] that is a subsequence of s
 int numMatchingSubseq(string s, vector<string> words) {
@@ -392,9 +412,41 @@ int longestIncreasingSubsequence(vector<int>A) {
 	return m - begin(A);
 }
 
-namespace ARR {
-	int main() {
 
-		return 0;
+//increasing subsequence of length k such that ... i1 < i2 < i3 < i4 ... < ik and A[i1] < A[i2] < A[i3] ... A[ik]
+//https://leetcode.com/problems/increasing-triplet-subsequence/
+
+bool isIncreasingSubSequence(vector<int>A, int k) {
+	vector<int>cand(k-1, INT_MAX);
+	for (int i = 0; i < A.size(); i++) {
+		for (int j = 0; j < k-1; j++) {
+			if (A[i] <= cand[j]) {
+				cand[j] = A[i];
+				break;
+			}
+			else if (j == k - 2)
+				return true;
+		}
 	}
+	return false;
+}
+//https://leetcode.com/problems/perfect-rectangle/
+bool isRectangleCover(vector<vector<int>>A) {
+	auto key = [](int x, int y) { return to_string(x) + " " + to_string(y); };
+	set<string>s;
+	int x1 = INT_MAX, y1 = INT_MAX, x2 = INT_MIN, y2 = INT_MIN, area = 0;
+	for (auto c : A) {
+		x1 = min(x1, c[0]), y1 = min(y1, c[1]);
+		x2 = max(x2, c[2]), y2 = max(y2, c[3]);
+		area += (c[2] - c[0]) * (c[3] - c[1]);
+		string s1 = key(c[0], c[1]), s2 = key(c[2], c[1]), s3 = key(c[2], c[3]), s4 = key(c[0], c[3]);
+		if (!s.erase(s1)) s.insert(s1);
+		if (!s.erase(s2)) s.insert(s2);
+		if (!s.erase(s3)) s.insert(s3);
+		if (!s.erase(s4)) s.insert(s4);
+
+	}
+	return s.count(key(x1, y1)) and s.count(key(x2, y1)) and
+		s.count(key(x2, y2)) and s.count(key(x1, y2)) and
+		s.size() == 4 and area == (x2 - x1) * (y2 - y1);
 }

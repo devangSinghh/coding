@@ -1,6 +1,7 @@
 #pragma once
 #include <vector>
 #include<algorithm>
+#include <unordered_map>
 #ifndef _ARRAY_
 #define _ARRAY_
 
@@ -44,4 +45,6 @@ extern std::vector<pi>activitySelection(vi start, vi duration);
 extern void egyptianFraction(int nr, int dr);
 extern int totalShopsVisited(vi arr, vi endT, int k);
 extern int shortestPathinMatrix(std::vector<std::vector<int>> mat);
+extern int findNumOfLongestIncreasingSubSequence(std::vector<int>v);
+//extern int waysToAssignCap(int mask, int i, std::unordered_map<int, std::vector<int>>capList, std::vector<std::vector<int>>dp, int allmask);
 #endif

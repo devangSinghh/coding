@@ -12,6 +12,18 @@ bool checkPalindrome(string s) {
 	return equal(begin(s), end(s), rbegin(s));
 }
 
+//whether a string 's' ends with string 't'
+//bool ends_with(string value, string ending) {
+//	if (ending.size() > value.size()) return false;
+//	return equal(ending.rbegin(), ending.rend(), value.rbegin());
+//}
+
+bool ends_with(string s, string t) {
+	if (t.size() > s.size())
+		return false;
+	return equal(rbegin(t), rend(t), rbegin(s));
+}
+
 //check if string s1 is subsequence of s2 (the function is effective even if s1 is of order 1e9)
 bool checkSubSequence(string s1, string s2) {
 	char* s = &s1[0]; char* t = &s2[0];
@@ -165,4 +177,57 @@ int countPalinDromeSubstrings(string s) {
 	int n = s.size();
 	if (n == 0) return 0;
 
+}
+
+
+//O(n)
+//https://www.educative.io/edpresso/longest-palindromic-substring-in-on-with-manachers-algorithm
+void lengthOfLongestPalindromeSubString(string s) {
+	for (int i = 0; i < s.size(); i++)
+		s.insert(i++, "#");
+	s += '#';
+	int n = s.size(), C = 0, R = 0;
+	vector<int>lps(n, 0);
+
+	for (int i = 0; i < n; i++) {
+		int mirror = 2 * C - i;
+		if (R > i)
+			lps[i] = min(R - i, lps[mirror]);
+		else
+			lps[i] = 0;
+		try {
+				while (i + 1 + lps[i] < n and i - 1 - lps[i] >= 0 and i - 1 - lps[i] < n and i + 1 + lps[i] >= 0 and s[i + 1 + lps[i]] == s[i - 1 - lps[i]]) {
+					lps[i] += 1;
+				}
+		}
+		catch (int i) {
+			cout << "exception" << "\n";
+		}
+		if (i + lps[i] > R)
+			C = i, R = i + lps[i];
+	}
+	auto it = max_element(begin(lps), end(lps));
+	int r = *it, c = it - begin(lps);
+	for (int i = c - r; i < c + r; i++)
+		if (s[i] == '#') s[i] = (char)0;
+	cout << r << " " << c << "\n";
+	cout << s << "\n"; 
+}
+
+//https://leetcode.com/problems/longest-valid-parentheses/
+//Given a string containing just the characters '(' and ')', 
+//find the length of the longest valid (well-formed) parentheses substring.
+//eg. s = "(()" ans => 2, s = ")()())" ans => 4
+int longestValidParentheses(string s) {
+	stack<int>stk;
+	int maxLen = 0;
+	stk.push(-1);
+	for (int i = 0; i < s.size(); i++) {
+		int top = stk.top();
+		if (top != -1 and s[i] == ')' and s[top] == '(')
+			stk.pop(), maxLen = max(maxLen, i - stk.top());
+		else
+			stk.push(i);
+	}
+	return maxLen;
 }

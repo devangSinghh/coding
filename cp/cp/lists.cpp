@@ -24,6 +24,6 @@ struct ListNode {
 //merge 2 sorted link lists (8ms runtime)
 //ListNode* mergeTwoLists(ListNode* a, ListNode* b) {
 //	if (!a || (b && a->val > b->val)) swap(a, b);
-//	while (a) a->next = (a->next, b);
+//  a->next = mergeTwoLists(a->next, b);
 //	return a;
 //}

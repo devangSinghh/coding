@@ -8,7 +8,19 @@ void print2dVector(vector<vector<int>> v) {
 		cout << "\n";
 	}
 }
+vector<vector<int>> PrefixSum2D(vector<vector<int>>A) {
+	vector<vector<int>>psa;
+	int m = A.size(), n = A[0].size();
+	for (int i = 0; i < m; i++)
+		psa[i][0] += A[0][i];
+	for (int j = 0; j < n; j++)
+		psa[0][j] += A[0][j];
 
+	for (int i = 1; i < m; i++)
+		for (int j = 1; j < n; j++)
+			psa[i][j] = psa[i - 1][j] + psa[i][j - 1] - psa[i - 1][j - 1] + A[i][j];
+	return psa;
+}
 //to rotate a matrix clockwise => first reverse up down => swap the symmetry
 
 void rotateClockwise(vector<vector<int>>mat) {
@@ -75,9 +87,26 @@ int fibonacci_using_MatrixExponentiation(int n) { // number of instructions exec
 	return F[0][0];
 }
 
-namespace MAT {
-	int main() {
+//https://leetcode.com/problems/minimum-number-of-flips-to-convert-binary-matrix-to-zero-matrix/
 
-		return 0;
-	}
+
+//https://leetcode.com/problems/number-of-submatrices-that-sum-to-target/
+int numSubmatrixSumTarget(vector<vector<int>> A, int target) {
+	int m = A.size(), n = A[0].size(), res = 0;
+	unordered_map<int, int>u;
+	for (int i = 0; i < m; i++)
+		for (int j = 1; j < n; j++)
+			A[i][j] += A[i][j - 1];
+
+	for (int i = 0; i < n; i++)
+		for (int j = i; j < n; j++) {
+			u = { {0, 1} };
+			int curr = 0;
+			for (int k = 0; k < m; k++) {
+				curr += A[k][j] - (i > 0 ? A[k][i - 1] : 0);
+				res += u.find(curr - target) != u.end() ? u[curr - target] : 0;
+				u[curr]++;
+			}
+		}
+	return res;
 }
