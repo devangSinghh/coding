@@ -84,6 +84,25 @@ int findSet(vector<int>parent, int v) {
 	return parent[v] = findSet(parent, parent[v]);
 }
 
+// bool detectLoop(Node* head)//find loop in linked list
+//     {
+//         Node* p1=head;
+//         Node* p2=head;
+//         while(p1->next!=NULL && p2->next->next!=NULL){
+//             p1=p1->next;
+//             p2=p2->next->next;
+//             if(p1==p2){
+//                 p1=head;
+//                 while(p1!=p2 && p1->next!=NULL && p2->next!=NULL){
+//                     p1=p1->next;
+//                     p2=p2->next;
+//                 }
+//                 return true;
+//             }
+//         }
+//         return false;
+//     }
+
 void Union(vector<int>parent, vector<int>rank, int x, int y) {
 	x = findSet(parent, x);
 	y = findSet(parent, y);
