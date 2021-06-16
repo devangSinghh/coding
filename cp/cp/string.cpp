@@ -42,11 +42,9 @@ int countVowelStrings(int n) {
 	return dp[5];
 }
 
-
 int countVowelStringsByCombinations(int n) {
 	return (n + 1)*(n + 2)*(n + 3)*(n + 4) / 24;  //n+4C4 pick up 4 places from (n+4) places
 }
-
 
 //adding 2 binary strings
 string addTwoBinaryStrings(string a, string b) {
@@ -150,11 +148,11 @@ vector<int>failureFunction(string w) {
 		else if (i == 0)
 			v[j++] = 0;
 		else
-			i = v[i - 1]; //mismatch --> baacktrack
+			i = v[i - 1]; //mismatch --> backtrack
 	return v;
 }
 
-//KMP algorithm for searching substring w, in string S in O(m + n) time
+//KMP algorithm for searching substring w, in string s in O(m + n) time
 bool kmpSearch(string w, string s) {
 	int i = 0, j = 0, m = w.size(), n = s.size();
 	vector<int>arr = failureFunction(w);
@@ -230,4 +228,26 @@ int longestValidParentheses(string s) {
 			stk.push(i);
 	}
 	return maxLen;
+}
+
+//https://leetcode.com/problems/ambiguous-coordinates/
+vector<string>ambiguousCoordinatesCases(string &&s) {
+	vector<string>res{ s };
+	if (s.size() == 1) return {};
+	if (s.front() == '0') { //0xxxx
+		if (s.back() == '0') return {};//0xxxx0
+		return { "0." + s.substr(1) };
+	}
+	if (s.back() == '0') return { s }; //xxxx0
+	for (int i = 1; i < s.size(); i++)
+		res.emplace_back(s.substr(0, i) + '.' + s.substr(i)); //all possible combinations where decimal can be placed
+	return res;
+}
+vector<string>ambiguousCoordinates(string s) {
+	vector<string>res;
+	for (int i = 2; i < s.size() - 1; i++)
+	for(auto &a : ambiguousCoordinatesCases(s.substr(1, i - 1)))
+	for(auto &b : ambiguousCoordinatesCases(s.substr(i, s.size() - i - 1)))
+		res.push_back("(" + a + ", " + b + ")");
+	return res;
 }

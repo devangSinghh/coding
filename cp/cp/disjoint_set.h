@@ -30,12 +30,15 @@ using namespace std;
 #define all(x) begin(x), end(x);
 class __declspec(dllexport) disjoint_set {
 	vector<int>v;
+	vector<int>rank;
 	int sz;
 public :
 	disjoint_set(int n);
 	void makeset(int n);
 	int find(int i);
 	void join(int i, int j);
+	int findByCompression(int i);
+	void joinByRank(int i, int j);
 	int size();
 };
 

@@ -126,6 +126,7 @@
     <ClCompile Include="array.cpp" />
     <ClCompile Include="backtracking.cpp" />
     <ClCompile Include="cf-contests.cpp" />
+    <ClCompile Include="disjoint_set.cpp" />
     <ClCompile Include="dp.cpp" />
     <ClCompile Include="graph.cpp" />
     <ClCompile Include="greedy.cpp" />
@@ -139,6 +140,7 @@
     <ClInclude Include="allheaders.h" />
     <ClInclude Include="array.h" />
     <ClInclude Include="backtracking.h" />
+    <ClInclude Include="disjoint_set.h" />
     <ClInclude Include="graph.h" />
     <ClInclude Include="matrix.h" />
     <ClInclude Include="strings.h" />

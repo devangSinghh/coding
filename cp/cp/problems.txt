@@ -17,7 +17,7 @@ Greedy
 https://leetcode.com/problems/broken-calculator/
 
 Dynamic programming questions
-
+https://leetcode.com/problems/maximize-grid-happiness/
 https://leetcode.com/problems/best-time-to-buy-and-sell-stock-with-cooldown/
 https://leetcode.com/problems/best-time-to-buy-and-sell-stock-with-transaction-fee/
 https://leetcode.com/problems/can-i-win/
@@ -39,3 +39,6 @@ String
 Binary Search
 https://leetcode.com/problems/koko-eating-bananas/
 https://practice.geeksforgeeks.org/problems/trapping-rain-water-1587115621/1
+
+BackTracking
+https://leetcode.com/problems/verbal-arithmetic-puzzle/

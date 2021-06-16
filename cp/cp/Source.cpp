@@ -63,12 +63,12 @@ string multiple(int n) {
 	return s;
 }
 
-struct Edge {
-	int u, v, w;
-	bool operator < (Edge const &other) {
-		return w < other.w;
-	}
-};
+//struct Edge {
+//	int u, v, w;
+//	bool operator < (Edge const &other) {
+//		return w < other.w;
+//	}
+//};
 //void solve() {
 //	int a;
 //}
@@ -165,12 +165,19 @@ int dijkstra(int A, const vector<vector<int>>B, int src, int dest) {
 	return shortestWeight;
 }
 
+int getFileNum(string s) {
+	string num;
+	int i = s.size() - 2;
+	while (i >= 0 and s[i] != '(') num += s[i--];
+	reverse(begin(num), end(num));
+	return stoi(num);
+}
+
 int main() {
 	ios_base::sync_with_stdio(false);
 	cin.tie(NULL);
-	vector<int> v(10);
-	iota(v.begin(), v.end(), 1);
-	double x = accumulate(v.begin(), v.end(), 0.0, [&](double x, double y) {return x + y / v.size(); });
-	cout << x << endl;
+
+	cout << (1 << 10);
+
 	return 0;
 }

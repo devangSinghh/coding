@@ -1,4 +1,8 @@
 #include "allheaders.h"
+#ifdef _MSC_VER
+#  include <intrin.h>
+#  define __builtin_popcount __popcnt
+#endif
 using namespace std;
 
 /*
@@ -74,7 +78,7 @@ int lenLongestFibSubseq(vector<int> A) {
 			else index = -1; //if k is not found then index = -1
 
 			if (index != -1 && index < i) { //check if k is present and its index is less than i
-				dp[i][j] = max(dp[i][j], dp[index][i] + 1); //new dp will be either sum of previous one which was (index, i) => because these 2 sum upto A[j, or current one..max of 2
+				dp[i][j] = max(dp[i][j], dp[index][i] + 1); //new dp will be either sum of previous one which was (index, i) => because these 2 sum upto A[j], or current one...max of 2
 				maxLen = max(maxLen, dp[i][j]);
 			}
 		}
@@ -94,7 +98,7 @@ int numSquares(int n) {
 		return 4;
 	int a = -1, b = sqrt(n);
 	n -= b * b;
-	b += b + 1;
+	b += b + 1; //making b an odd number (of type 2n + 1)
 
 	while (a <= b) {
 		if (n < 0)
@@ -129,16 +133,18 @@ int rec(int n, int m) {
 
 
 //knapsack problems
+//time complexity O(2 ^ n), because we have 2 choices at any point of time... either we put the weight or discard it
 int knapsackRecursive(vector<int>profit, vector<int>weights, int capacity, int index = 0) {
 	if (capacity <= 0 or index >= profit.size())
 		return 0;
 	int p1 = 0, p2 = 0;
 	if (weights[index] <= capacity)
-		p1 = profit[index] + knapsackRecursive(profit, weights, capacity - weights[index], index + 1);
-	p2 = knapsackRecursive(profit, weights, capacity, index + 1);
+		p1 = profit[index] + knapsackRecursive(profit, weights, capacity - weights[index], index + 1); //we put the weight
+	p2 = knapsackRecursive(profit, weights, capacity, index + 1); //we discard the weight
 	return max(p1, p2);
 }
 
+//weights on row and capacity on column
 int knapsackBottomUp(vector<int>profit, vector<int>weights, int capacity) {
 	if (capacity <= 0 or profit.empty() or weights.size() != profit.size())
 		return 0;
@@ -146,7 +152,7 @@ int knapsackBottomUp(vector<int>profit, vector<int>weights, int capacity) {
 	vector<vector<int>>dp(n, vector<int>(capacity + 1));
 
 	for (int i = 0; i < n; i++)
-		dp[i][0] = 0;
+		dp[i][0] = 0; //for 0 capacity no weights need to be put, therefore profit 0
 	for (int i = 0; i <= capacity; i++) {
 		if (weights[0] <= i)
 			dp[0][i] = profit[0];
@@ -156,24 +162,25 @@ int knapsackBottomUp(vector<int>profit, vector<int>weights, int capacity) {
 		for (int j = 1; j <= capacity; j++) {
 			int p1 = 0, p2 = 0;
 			if (weights[i] <= j)
-				p1 = profit[i] + dp[i - 1][j - weights[i]];
-			p2 = dp[i - 1][j];
-			dp[i][j] = max(p1, p2);
+				p1 = profit[i] + dp[i - 1][j - weights[i]]; //we put the weight
+			p2 = dp[i - 1][j]; //we discard the weight
+			dp[i][j] = max(p1, p2); //taking maximum of 2 conditions
 		}
 	}
 
 	return dp[n - 1][capacity];
 }
 
+//since we only need (i - 1)th while computing therefore spce can be reduced
 int knapsackTopDown(vector<int>profit, vector<int>weights, int capacity) {
-	if (capacity <= 0 or profit.empty() or weights.size() != profit.size())
+	if (capacity <= 0 or profit.empty() or weights.size() != profit.size()) //sanity check
 		return 0;
 	int n = profit.size();
 	vector<int>curr(capacity+1, 0);
 
 	for (int i = 0; i < n; i++) {
 		for (int c = weights[i]; c <= capacity; c++) {
-			curr[c] = max(curr[c-1], profit[i] + curr[c - weights[i]]);
+			curr[c] = max(curr[c-1], profit[i] + curr[c - weights[i]]); //max of (discard the weight, put the weight)
 		}
 	}
 	return curr[capacity];
@@ -187,7 +194,7 @@ int unboundedKnapsack(vector<int>profit, vector<int>weights, int capacity) {
 
 	for (int i = 0; i < n; i++) {
 		for (int c = weights[i]; c <= capacity; c++) {
-			curr[c] = max(curr[c], profit[i] + curr[c - weights[i]]); //imp line
+			curr[c] = max(curr[c], profit[i] + curr[c - weights[i]]); //max(putting the prev weight multiple times, putting new weight)
 		}
 	}
 	return curr[capacity];
@@ -219,35 +226,28 @@ int fractionalKnapSack(vector<int>profit, vector<int>weights, int capacity) {
 	return val;
 }
 
-
 bool canMakeEqualSubSets(vector<int>A, int sum , int index) {
 	int n = A.size();
-	if (sum & 1) return false;
+	if (sum & 1) return false; //if sum is odd partition is not possible
 	if (sum == 0) return true;
-	if (index >= n or A.empty()) return false;
-
+	if (index >= n or A.empty()) return false; //sanity check
 	if (A[index] <= sum)
-		if (canMakeEqualSubSets(A, sum - A[index], index + 1))
+		if (canMakeEqualSubSets(A, sum - A[index], index + 1)) //we take the number
 			return true;
-
-	return canMakeEqualSubSets(A, sum, index + 1);
+	return canMakeEqualSubSets(A, sum, index + 1); //we discard that number
 }
 
 bool canMakeEqualSubSetsTopDown(vector<vector<int>>dp, vector<int>A, int sum, int index) {
 	if (sum == 0) return true;
-	if (A.empty() or index >= A.size()) return false;
-
-	if (dp[index][sum] == -1) {
+	if (A.empty() or index >= A.size()) return false; //sanity check
+	if (dp[index][sum] == -1)
 		if (A[index] <= sum)
 			if (canMakeEqualSubSetsTopDown(dp, A, sum - A[index], index + 1)) {
-				dp[index][sum] = 1;
+				dp[index][sum] = 1; //memoize
 				return true;
 			}
-	}
-
-	dp[index][sum] = canMakeEqualSubSetsTopDown(dp, A, sum, index + 1) ? 1 : 0;
-
-	return dp[index][sum] == 1 ? true : false;
+	dp[index][sum] = canMakeEqualSubSetsTopDown(dp, A, sum, index + 1) ? 1 : 0; //memoize
+	return dp[index][sum] == 1 ? true : false; 
 }
 
 //time : 462ms
@@ -275,7 +275,7 @@ bool canPartitionBottomUp(vector<int>A) {
 //time : 12ms
 bool partitionUsingBits(vector<int>A) {	
 	bitset<10001>bits(1);
-	for (auto n : A) bits |= bits << n;
+	for (auto n : A) bits |= bits << n; //switch on the bit at position n
 	int sum = accumulate(begin(A), end(A), 0);
 	return !(sum % 2) and bits[sum >> 1];
 }
@@ -324,25 +324,21 @@ int shortestPathinMatrix(vector<vector<int>>mat) {
 	return dp[m-1][n-1];
 }
 
-//Given an integer array nums, return the number of longest increasing subsequences.
+//Given an integer array nums, return the number of longest increasing subsequences(LIS).
 int findNumOfLongestIncreasingSubSequence(vector<int>A) {
 	int n = A.size(), maxLen = 0, ans = 0;
 	vector<pair<int, int>>dp(n, { 1, 1 }); //pair(count, length)
 	for (int i = 0; i < n; i++) {
-		for (int j = 0; j < i; j++) {
-			if (A[i] > A[j]) {
+		for (int j = 0; j < i; j++)
+			if (A[i] > A[j])
 				if (dp[i].second == dp[j].second + 1)
-					dp[i].first += dp[j].first;
+					dp[i].first += dp[j].first; //cumulatively add the result to bigger index ... i.e. i > j ... so store result of j in i
 				else if (dp[i].second < dp[j].second + 1)
 					dp[i].second = dp[j].second + 1, dp[i].first = dp[j].first;
-			}
-		}
 		maxLen = max(maxLen, dp[i].second);
 	}
-
-	for (auto c : dp) {
+	for (auto c : dp)
 		if (c.second == maxLen) ans += c.first;
-	}
 	return ans;
 }
 
@@ -436,4 +432,56 @@ int minDifficulty(vector<int>& jobDifficulty, int d) {
 	if (n < d) return -1;
 	vector<vector<int>>dp(n, vector<int>(d + 1, -1));
 	return dfsMinDifficultyJobSchedule(d, 0, jobDifficulty, dp);
+}
+
+
+//https://leetcode.com/contest/biweekly-contest-29/problems/parallel-courses-ii/
+int minNumberOfSemesters(int n, vector<vector<int>> relations, int k) {
+	vector<int>pre(n);
+	for (auto& c : relations) {
+		c[0] -= 1, c[1] -= 1;
+		pre[c[1]] |= (1 << c[0]);
+	}
+	vector<int>dp(1 << n, n);
+	dp[0] = 0;
+	for (int i = 0; i < (1 << n); i++) {
+		int ex = 0;
+		for (int j = 0; j < n; j++)
+			if ((i & pre[j]) == pre[j])
+				ex |= (1 << j);
+		ex &= ~i;
+		for (int s = ex; s; s = (s - 1) & ex)
+			if (__builtin_popcount(s) <= k)
+				dp[i | s] = max(dp[i | s], dp[i] + 1);
+	}
+	return dp.back();
+}
+
+//https://leetcode.com/problems/minimum-number-of-days-to-eat-n-oranges/
+//first eat n % 2 oranges then swallow n/2 ... or n % 3 oranges then swallow n / 3 oranges
+unordered_map<int, int>dpForMinDays;
+int minDays(int n) {
+	if (n <= 1) return n;
+	if (dpForMinDays.count(n) == 0)
+		dpForMinDays[n] = 1 + min(n % 2 + minDays(n / 2), n % 3 + minDays(n / 3));
+	return dpForMinDays[n];
+}
+
+//https://leetcode.com/problems/paint-house-iii/
+//paint-house-III
+int dppH3[101][101][21] = {};
+int dfsPaintHouseIII(vector<int>& houses, vector<vector<int>>& cost, int i, int target, int last_clr) {
+	if (i >= houses.size() or target < 0)
+		return target == 0 ? target : 1000001;
+	if (houses[i])
+		return dfsPaintHouseIII(houses, cost, i + 1, target - (last_clr != houses[i]), houses[i]);
+	if (dppH3[i][target][last_clr]) return dppH3[i][target][last_clr];
+	int res = 1000001;
+	for (int clr = 1; clr <= cost[i].size(); ++clr)
+		res = min(res, cost[i][clr - 1] + dfsPaintHouseIII(houses, cost, i + 1, target - (last_clr != clr), clr));
+	return dppH3[i][target][last_clr] = res;
+}
+int minCostPaintHouseIII(vector<int>& houses, vector<vector<int>>& cost, int m, int n, int target) {
+	int res = dfsPaintHouseIII(houses, cost, 0, target, 0);
+	return res > 1000000 ? -1 : res;
 }

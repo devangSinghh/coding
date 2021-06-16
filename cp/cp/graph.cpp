@@ -1,8 +1,15 @@
 #include "graph.h"
+#include "disjoint_set.h"
 #include "allheaders.h"
 constexpr auto INF = 0x3f3f3f3f;
 typedef unordered_map<string, unordered_map<string, double>> umapSUSd;
 graph::graph(int v) : v(v), adj(new vector<int>[v]), graphRepW(new vector<pair<int, int>>[v]) {};
+graph::graph(int v, int e) : v(v), e(e), edge(new Edge[e]), adj(new vector<int>[v]), graphRepW(new vector<pair<int, int>>[v]) {};
+
+graph* graph::createGraph(int v, int e) {
+	graph* g = new graph(v, e);
+	return g;
+}
 
 void graph::addEdge(int v, int w) {
 	adj[v].push_back(w);
@@ -18,15 +25,13 @@ void graph::addWeightedEdge(int u, int v, int w) {
 }
 
 void graph::BFS(int start) {
-	bool *visited = new bool[v];
-	for (int i = 0; i < v; i++)
-		visited[i] = false;
-
+	vector<int>visited(v, false);
 	queue<int>q;
 	visited[start] = true;
 	q.push(start);
 	while (!q.empty()) {
 		start = q.front();
+		if (visited[start]) continue;
 		q.pop();
 		result.push_back(start);
 		for (auto vertex : adj[start]) {
@@ -44,6 +49,7 @@ void graph::DFS(int s) {
 			DFS(c);
 	}
 }
+
 void graph::traverseGraph() {
 	for (auto c : result) cout << c << " ";
 	cout << "\n";
@@ -58,14 +64,13 @@ vector<int> graph::findRedundantConnection(vector<vector<int>> edges) {
 	vi res;
 	for (auto e : edges) {
 		int n1 = e[0], n2 = e[1];
-		while (parent[n1]) n1 = parent[n1];
+		while (parent[n1]) n1 = parent[n1]; //find
 		while (parent[n2]) n2 = parent[n2];
-		if (n1 == n2) res = e;
-		else parent[n1] = n2;
+		if (n1 == n2) res = e; //if we found 2 elements within same tree then we've found a closing edge
+		else parent[n1] = n2;  //keep merging both the trees
 	}
 	return res;
 }
-
 
 void graph::topologicalSortUtil(int v, stack<int>Stack) {
 	visited[v] = true;
@@ -111,15 +116,13 @@ void graph::dijkstra(int s) {
 
 		}
 	}
-
-	for (auto c : dist)
-		cout << c << " ";
+	for (auto c : dist) cout << c << " ";
 	cout << "\n";
 }
 
-//minimum moves for knight to move from point (a, b) to point (x, y) in a matrix of row*col
+//minimum moves for knight to move from point (a, b) to point (x, y) in a matrix of row * col
 int knight(int row, int col, int a, int b, int x, int y) {
-	priority_queue<vector<int>, vector<vector<int>>, greater<>>pq;
+	priority_queue<vector<int>, vector<vector<int>>, greater<>>pq; //(moves, x, y)
 	vector<vector<bool>>visited(row + 1, vector<bool>(col + 1, false));
 	vector<vector<int>>d = { {2, 1}, {2, -1}, {-2, 1}, {-2, -1}, {1, 2}, {-1, 2}, {1, -2}, {-1, -2} };
 	pq.push({ 0, a, b });
@@ -127,10 +130,10 @@ int knight(int row, int col, int a, int b, int x, int y) {
 		auto u = pq.top();
 		pq.pop();
 		visited[u[1]][u[2]] = true;
-		if (u[1] == x and u[2] == y) return u[0];
-		for (int i = 0; i < 8; i++) {
+		if (u[1] == x and u[2] == y) return u[0]; //if found the point then return
+		for (int i = 0; i < 8; i++) {             //search in every direction
 			int nr = u[1] + d[i][0], nc = u[2] + d[i][1];
-			if (nr >= 1 and nr <= row and nc >= 1 and nc <= col and !visited[nr][nc])
+			if (nr >= 1 and nr <= row and nc >= 1 and nc <= col and !visited[nr][nc]) //sanity check
 				visited[nr][nc] = true, pq.push({ u[0] + 1, nr, nc });
 		}
 	}
@@ -157,25 +160,22 @@ int numberOfTranspositions(vector<int>permutations) {
 	return transpositions;
 }
 
+//https://leetcode.com/problems/evaluate-division/
 double dfsForDivisonInGraph(string s, string e, umapSUSd g, unordered_set<string>visited) {
-	if (g.find(s) == g.end())
-		return -1;
-	if (g[s].find(e) != g[s].end())
-		return g[s][e];
-
+	if (g.find(s) == g.end()) return -1;
+	if (g[s].find(e) != g[s].end()) return g[s][e];
 	for (auto c : g[s]) {
 		if (find(begin(visited), end(visited), c.first) != visited.end())
 			continue;
 		visited.insert(c.first);
 		double res;
 		if ((res = dfsForDivisonInGraph(c.first, e, g, visited)) != -1) {
-			return g[s][e] = g[s][c.first]*res;
+			return g[s][e] = g[s][c.first] * res;
 		}
 	}
 	return -1;
 }
 
-//https://leetcode.com/problems/evaluate-division/
 vector<double>divisionUsingGraph(vector<vector<string>> eq, vector<double> values, vector<vector<string>> queries){
 	umapSUSd g;
 	int n = eq.size();
@@ -187,9 +187,7 @@ vector<double>divisionUsingGraph(vector<vector<string>> eq, vector<double> value
 		g[e[0]][e[0]] = 1.0;
 		g[e[1]][e[1]] = 1.0;
 	}
-
 	unordered_set<string>visited;
-
 	for (auto c : queries) {
 		visited = { c[0] };
 		res.push_back(dfsForDivisonInGraph(c[0], c[1], g, visited));
@@ -245,3 +243,32 @@ int minPushBox(vector<vector<char>>& A) {
 	}
 	return -1;
 }
+
+
+//https://leetcode.com/problems/min-cost-to-connect-all-points/
+int find(vector<int>v, int i) {
+	return v[i] < 0 ? i : v[i] = find(v, v[i]);
+}
+int minCostConnectPoints(vector<vector<int>>& A) {
+        int n = A.size(), res = 0, k = 0;
+        vector<int>v(n, -1);
+        vector<vector<int>>arr;
+        for(int i = 0; i < n; i++)
+            for(int j = i + 1; j < n; j++)
+                arr.push_back({abs(A[i][0] - A[j][0]) + abs(A[i][1] - A[j][1]), i, j });
+        make_heap(begin(arr), end(arr), greater<vector<int>>());
+        while(!arr.empty()) {
+            pop_heap(begin(arr), end(arr), greater<vector<int>>());
+			auto e = arr.back();
+			int dist = e[0], i = e[1], j = e[2];
+            arr.pop_back();
+            i = find(v, i), j = find(v, j);
+            if(i != j) {
+                res += dist;
+                v[i] += v[j];
+                v[j] = i;
+                if(v[i] == -n) break;
+            }
+        }
+        return res;
+ }

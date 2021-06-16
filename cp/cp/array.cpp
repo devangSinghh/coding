@@ -13,7 +13,7 @@ useful vector STL functions ::
 	is_sorted(begin(v), end(v)); checks if vector is sorted or not
 	upper_bound(begin(v), end(v))
 	lower_bound(begin(v), end(v))
-
+	iota(begin(v), end(v), 0) => {0, 1, 2, 3, 4, 5, 6, 7, ...}; used to fill array in increasing fashion
 	accumulate(begin(v), end(v), 0); gives sum of elements of array from begin to end . 3rd parameter is the sum starting value
 	distance(begin(v), it) gives distance between any 2 iterators of a vector/string
 
@@ -84,6 +84,7 @@ int kadane(vector<int>v) {
 	return msum;
 }
 
+
 //number of primes before a number n
 vector<int> primesBeforeN(int n) {
 	bool* isPrime = new bool[n];
@@ -92,7 +93,7 @@ vector<int> primesBeforeN(int n) {
 		isPrime[i] = true;
 
 	for (int i = 0; i*i < n; i++) {
-		if (!isPrime[i]) continue; //only finding composite numbers
+		if (!isPrime[i]) continue; //for every prime number i we're making every instances of its multiple composite ... therefore if number is not prime then continue else proceed forward
 		for (int j = i * i; j < n; j+=i) {
 			isPrime[j] = false;
 		}
@@ -204,13 +205,9 @@ void nextPermutation(vector<int>v) {
 int combinationsInArrayAddingToTarget(vector<int>v, int target) {
 	vector<unsigned int>dp(target + 1);
 	dp[0] = 1;
-
-	for (int sum = 1; sum <= target; sum++) {
-		for (auto x : v) {
+	for (int sum = 1; sum <= target; sum++)
+		for (auto x : v)
 			if (sum - x >= 0) dp[sum] += dp[sum - x];
-		}
-	}
-
 	return dp[target];
 }
 
@@ -240,14 +237,11 @@ vector<int>kthRowOfPascalTraingle(int k) {
 	int a = 1; vector<int>v;
 	for (int i = 1; i <= k + 1; i++) {
 		v.push_back(a);
-		a = a*(k - i + 1)/ i;
+		a = a * (k + 1 - i)/ i;
 	}
 	print(v);
 	return v;
 }
-
-
-
 
 //number of paths from (0,0) to end of matrix
 int numberOfPathsInMatrix(int m, int n) {
@@ -257,6 +251,18 @@ int numberOfPathsInMatrix(int m, int n) {
 		path /= (i - n + 1);
 	}
 	return path;
+}
+
+int numberOfPathsToCellMN(int m, int n) {
+	vector<vector<int>>dp(m, vector<int>(n, 0));
+	for (int i = 0; i < m; i++)
+		dp[i][0] = 1;
+	for (int i = 0; i < n; i++)
+		dp[0][i] = 1;
+	for (int i = 0; i < m; i++)
+		for (int j = 0; j < n; j++)
+			dp[i][j] = dp[i - 1][j] + dp[i][j - 1]; // + dp[i-1][j-1] if diagonal movement is allowed
+	return dp[m - 1][n - 1];
 }
 
 int combinationSum4(vector<int>& A, int target) {
@@ -327,19 +333,14 @@ vector<int>maximumSlidingWindow(vector<int>&A, int k) {
 //Given a string s and an array of strings words, return the number of words[i] that is a subsequence of s
 int numMatchingSubseq(string s, vector<string> words) {
 	vector<const char* >waiting[128];
-
 	for (auto &w : words)
 		waiting[w[0]].push_back(w.c_str());
-
 	for (auto &c : s) {
 		auto advance = waiting[c];
 		waiting[c].clear();
-
-		for (auto it : advance) {
+		for (auto it : advance)
 			waiting[*++it].push_back(it);
-		}
 	}
-
 	return waiting[0].size();
 }
 
@@ -449,4 +450,45 @@ bool isRectangleCover(vector<vector<int>>A) {
 	return s.count(key(x1, y1)) and s.count(key(x2, y1)) and
 		s.count(key(x2, y2)) and s.count(key(x1, y2)) and
 		s.size() == 4 and area == (x2 - x1) * (y2 - y1);
+}
+
+//https://leetcode.com/problems/minimum-number-of-removals-to-make-mountain-array/
+//minimum number of removals to make an array a mountain array.
+// arr[0] < arr[1] < ... < arr[i - 1] < arr[i] and arr[i] > arr[i + 1] > ... > arr[arr.length - 1] 
+int minRemovalsToMakeMountainArray(vector<int>A) {
+	int n = A.size(), res = INT_MAX;
+	vector<int>l, r, dp(n);
+	for (int i = 0; i < n; i++) {
+		auto it = lower_bound(begin(l), end(l), A[i]);
+		if (it == end(l)) l.push_back(A[i]);
+		else *it = A[i];
+		dp[i] = l.size();
+	}
+	for (int i = n - 1; i > 0; i--) {
+		auto it = lower_bound(begin(r), end(r), A[i]);
+		if (it == end(r)) r.push_back(A[i]);
+		else *it = A[i];
+		if (dp[i] > 1 and r.size() > 1)
+			res = min(res, n - dp[i] - (int)r.size() + 1);
+	}
+	return res;
+}
+
+//https://leetcode.com/problems/subarrays-with-k-different-integers/
+//concept : exactly(k) = atMost(k) - atMost(k - 1)
+int atMost(vector<int>A, int k) {
+	int n = A.size(), j = 0, res = 0;
+	unordered_map<int, int>u;
+	for (int i = 0; i < n; i++) {
+		if (!u[A[i]]++) k--;
+		while (k < 0) {
+			j++;
+			if (!--u[A[j]]) k++;
+		}
+		res += i - j + 1;
+	}
+	return res;
+}
+int subarraysWithKDistinct(vector<int>A, int k) {
+	return atMost(A, k) - atMost(A, k - 1);
 }

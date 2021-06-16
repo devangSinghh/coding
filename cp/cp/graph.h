@@ -27,18 +27,24 @@
 #define _MATRIX_
 #endif
 using namespace std;
-
+class Edge {
+public :
+	int src, dest, weight;
+};
 class __declspec(dllexport) graph {
 private :
 	int v; //vertices
+	int e;
 	vector <int> *adj;
 	vector<int>result;
 	map<int, bool> visited;
 	unordered_map<int, vector<int>> adjDFS;
 	vector<pair<int, int>> *graphRepW; //for dijkstra
+	Edge* edge;
 public:
 	graph(int v);
 	graph(int v, int e);
+	graph* createGraph(int v, int e);
 	void addEdge(int v, int w);
 	void addEdgeForDfs(int v, int w);
 	void addWeightedEdge(int u, int v, int w);
