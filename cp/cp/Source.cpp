@@ -103,6 +103,16 @@ int findSet(vector<int>parent, int v) {
 //         return false;
 //     }
 
+int kadanealgo(int a[], int n){
+        int res=INT_MIN,tmp=0;
+        for(int i=0;i<n;i++){
+            tmp+=a[i];
+            if(res<tmp)res=tmp;
+            if(tmp<0)tmp=0;
+        }
+        return res;
+    }
+
 void Union(vector<int>parent, vector<int>rank, int x, int y) {
 	x = findSet(parent, x);
 	y = findSet(parent, y);
