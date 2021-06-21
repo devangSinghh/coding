@@ -113,6 +113,19 @@ int kadanealgo(int a[], int n){
         return res;
     }
 
+void merge(long long arr1[], long long arr2[], int n, int m) //merge 2 array without extra space O((n+m)log(n+m))
+        { 
+            int i=0,j=0,k=n-1;
+            while(i<=k && j<m){
+                if(arr1[i]<arr2[j])i++;
+                else{
+                    swap(arr1[k--],arr2[j++]);
+                }
+            }
+            sort(arr1,arr1+n);
+            sort(arr2,arr2+m);
+        }
+
 void Union(vector<int>parent, vector<int>rank, int x, int y) {
 	x = findSet(parent, x);
 	y = findSet(parent, y);
