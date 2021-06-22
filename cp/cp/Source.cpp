@@ -113,7 +113,25 @@ int kadanealgo(int a[], int n){
         return res;
     }
 
-void merge(long long arr1[], long long arr2[], int n, int m) //merge 2 array without extra space O((n+m)log(n+m))
+
+void rearrange(long long *arr, int n) //to re arrange a sorted array into eg - 123456 = 615243 alternate max and min without using space
+    { //  https://www.geeksforgeeks.org/rearrange-array-maximum-minimum-form-set-2-o1-extra-space/
+    	int l=0,r=n-1;
+    	int m=arr[n-1]+1;
+    	for(int i=0;i<n;i++){
+    	    if(i%2==0){
+    	        arr[i]+=(arr[r]%m)*m;//this statement stores the elements as multipliers and remainder
+    	        r--;
+    	    }
+    	    else{
+    	        arr[i]+=(arr[l]%m)*m;
+    	        l++;
+    	    }
+    	}
+    	for(int i=0;i<n;i++)arr[i]=arr[i]/m;
+    }
+
+void merge(long long arr1[], long long arr2[], int n, int m) //merge 2 sorted array without extra space O((n+m)log(n+m))
         { 
             int i=0,j=0,k=n-1;
             while(i<=k && j<m){
