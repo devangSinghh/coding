@@ -103,6 +103,47 @@ int findSet(vector<int>parent, int v) {
 //         return false;
 //     }
 
+int kadanealgo(int a[], int n){
+        int res=INT_MIN,tmp=0;
+        for(int i=0;i<n;i++){
+            tmp+=a[i];
+            if(res<tmp)res=tmp;
+            if(tmp<0)tmp=0;
+        }
+        return res;
+    }
+
+
+void rearrange(long long *arr, int n) //to re arrange a sorted array into eg - 123456 = 615243 alternate max and min without using space
+    { //  https://www.geeksforgeeks.org/rearrange-array-maximum-minimum-form-set-2-o1-extra-space/
+    	int l=0,r=n-1;
+    	int m=arr[n-1]+1;
+    	for(int i=0;i<n;i++){
+    	    if(i%2==0){
+    	        arr[i]+=(arr[r]%m)*m;//this statement stores the elements as multipliers and remainder
+    	        r--;
+    	    }
+    	    else{
+    	        arr[i]+=(arr[l]%m)*m;
+    	        l++;
+    	    }
+    	}
+    	for(int i=0;i<n;i++)arr[i]=arr[i]/m;
+    }
+
+void merge(long long arr1[], long long arr2[], int n, int m) //merge 2 sorted array without extra space O((n+m)log(n+m))
+        { 
+            int i=0,j=0,k=n-1;
+            while(i<=k && j<m){
+                if(arr1[i]<arr2[j])i++;
+                else{
+                    swap(arr1[k--],arr2[j++]);
+                }
+            }
+            sort(arr1,arr1+n);
+            sort(arr2,arr2+m);
+        }
+
 void Union(vector<int>parent, vector<int>rank, int x, int y) {
 	x = findSet(parent, x);
 	y = findSet(parent, y);
