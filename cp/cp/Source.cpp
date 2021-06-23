@@ -36,6 +36,21 @@ typedef unordered_map<int, int> umap;
 //https://stackoverflow.com/a/31165481/10814894
 
 
+
+int catalan_number(int n){//used for counting also it is the number of distinct BST formed with n nodes
+        vector<int> dp(n+1,0);
+        dp[0]=1;//base case for catalan number
+        dp[1]=1;
+       for(int i=2;i<=n;i++){
+           for(int j=0;j<i;j++){
+               dp[i]+=dp[j]*dp[i-j-1];
+           }
+       } 
+        return dp[n];
+    }
+
+
+
 string multiple(int n) {
 	if (n == 1) return "1";
 	vector<int>p(n, -1);
