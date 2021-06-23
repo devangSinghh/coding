@@ -4,7 +4,7 @@
 #  define __builtin_popcount __popcnt
 #endif
 using namespace std;
-
+static const int mod = 1e9 + 7;
 /*
 Given an array nums of integers, return the length of the longest arithmetic subsequence in nums.
 subsequence of an array nums is a list nums[i1], nums[i2], ..., nums[ik] with 0 <= i1 < i2 < ... < ik <= nums.length - 1,
@@ -283,7 +283,6 @@ bool partitionUsingBits(vector<int>A) {
 bool canPartition(vector<int>A) {
 	int sum = accumulate(begin(A), end(A), 0);
 	if (sum % 2 != 0) return false;
-
 	vector<vector<int>>dp(A.size(), vector<int>(sum / 2 + 1, -1));
 	return canMakeEqualSubSetsTopDown(dp, A, sum / 2, 0);
 }
@@ -472,16 +471,30 @@ int minDays(int n) {
 int dppH3[101][101][21] = {};
 int dfsPaintHouseIII(vector<int>& houses, vector<vector<int>>& cost, int i, int target, int last_clr) {
 	if (i >= houses.size() or target < 0)
-		return target == 0 ? target : 1000001;
-	if (houses[i])
-		return dfsPaintHouseIII(houses, cost, i + 1, target - (last_clr != houses[i]), houses[i]);
+		return target == 0 ? 0 : 1000001;
+	if (houses[i]) return dfsPaintHouseIII(houses, cost, i + 1, target - (last_clr != houses[i]), houses[i]);
 	if (dppH3[i][target][last_clr]) return dppH3[i][target][last_clr];
 	int res = 1000001;
-	for (int clr = 1; clr <= cost[i].size(); ++clr)
+	for (size_t clr = 1; clr <= cost[i].size(); ++clr)
 		res = min(res, cost[i][clr - 1] + dfsPaintHouseIII(houses, cost, i + 1, target - (last_clr != clr), clr));
 	return dppH3[i][target][last_clr] = res;
 }
 int minCostPaintHouseIII(vector<int>& houses, vector<vector<int>>& cost, int m, int n, int target) {
 	int res = dfsPaintHouseIII(houses, cost, 0, target, 0);
 	return res > 1000000 ? -1 : res;
+}
+
+//https://leetcode.com/problems/count-all-possible-routes/
+//Return the count of all possible routes from start to finish.
+int dpCountRoutes[201][101] = {};
+int countRoutes(vector<int>A, int s, int e, int fuel) { //A=>locations, s = starting point, e = ending point, fuel =>initial fuel
+	int n = A.size();
+	if (!dpCountRoutes[s][fuel]) {
+		dpCountRoutes[s][fuel] = 1 + (s == e); //when we've reached the destination
+		for (int j = 0; j < n; j++) {
+			if (s != j and fuel >= abs(A[s] - A[j]))
+				dpCountRoutes[s][fuel] = (dpCountRoutes[s][fuel] + countRoutes(A, j, e, fuel - abs(A[s] - A[j]))) % mod;
+		}
+	}
+	return dpCountRoutes[s][fuel] - 1;
 }

@@ -98,3 +98,22 @@ vector<int> getAllElements(TreeNode* root1, TreeNode* root2) {
     }
     return res;
 }
+
+
+TreeNode* trimBST(TreeNode* root, int low, int high) {
+    if (!root) return nullptr;
+    if (root->val < low) return trimBST(root->right, low, high);
+    if (root->val > high) return trimBST(root->left, low, high);
+    root->left = trimBST(root->left, low, high);
+    root->right = trimBST(root->right, low, high);
+    return root;
+}
+
+//https://leetcode.com/problems/pseudo-palindromic-paths-in-a-binary-tree/
+int pseudoPalindromicPaths(TreeNode* root, int count = 0) {
+    if (!root) return 0;
+    count ^= 1 << (root->val - 1);
+    int res = pseudoPalindromicPaths(root->left, count) + pseudoPalindromicPaths(root->right, count);
+    if (root->left == root->right and (count & (count - 1)) == 0) res++;
+    return res;
+}

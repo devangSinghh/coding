@@ -251,3 +251,75 @@ vector<string>ambiguousCoordinates(string s) {
 		res.push_back("(" + a + ", " + b + ")");
 	return res;
 }
+
+//https://leetcode.com/problems/concatenated-words/
+//Given an array of strings words (without duplicates), return all the concatenated words in the given list of words
+bool wordIsForming(string s, unordered_set<string>& Set) {
+	if (Set.empty()) return false;
+	vector<bool>dp(s.size() + 1);
+	dp[0] = 1;
+	for (int i = 1; i <= s.size(); i++) {
+		for (int j = i - 1; j >= 0; j--) {
+			if (dp[j]) {
+				string word = s.substr(j, i - j);
+				if (Set.find(word) != end(Set)) {
+					dp[i] = true;
+					break;
+				}
+			}
+		}
+	}
+	return dp[s.size()];
+}
+vector<string>findAllConcatenatedWordsInADict(vector<string>words) {
+	sort(begin(words), end(words), [](auto a, auto b) { return a.size() < b.size(); });
+	unordered_set<string>Set;
+	vector<string>res;
+	for (auto word : words) {
+		if (wordIsForming(word, Set))
+			res.push_back(word);
+		Set.insert(word);
+	}
+	return res;
+}
+
+//wildcard matching
+bool wildcardMatching(string s, string p) {
+	int m = s.length(), n = p.length();
+	int i = 0, j = 0, asterisk = -1, match;
+	while (i < m) {
+		if (j < n and p[j] == '*')
+			match = i, asterisk = j++;
+		else if (j < n and (s[i] == p[j] or p[j] == '?'))
+			i++, j++;
+		else if (asterisk >= 0)
+			i = ++match, j = asterisk + 1;
+		else return false;
+	}
+	while (j < n and p[j] == '*') j++;
+	return j == n;
+}
+
+//regular expression matching
+bool regexMatch(string s, string p) {
+	int m = s.size(), n = p.size();
+	vector<vector<bool>>dp(m + 1, vector<bool>(n + 1));
+	dp[0][0] = true;
+	for (int i = 0; i < n; i++)
+		if (p[i] == '*' and dp[0][i - 1])
+			dp[0][i + 1] = true;
+	for (int i = 1; i <= m; i++) {
+		for (int j = 1; j <= n; j++) {
+			if (p[j - 1] == s[i - 1] or p[j - 1] == '.')
+				dp[i][j] = dp[i - 1][j - 1];
+			else if (p[j - 1] == '*') {
+				if (s[i - 1] == p[j - 2] or p[j - 2] == '.')
+					dp[i][j] = dp[i - 1][j] or dp[i][j - 1] or dp[i][j - 2];
+				else
+					dp[i][j] = dp[i][j - 2];
+			}
+			else dp[i][j] = false;
+		}
+	}
+	return dp[m][n];
+}

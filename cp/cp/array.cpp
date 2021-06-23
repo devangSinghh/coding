@@ -32,7 +32,52 @@ __builtin_ctz(n) => This function is used to count the trailing zeros of the giv
  f[n] = f[n / 2] + i % 2 , count number of 1s in bit of a number
 */
 
+//range queries using segment tree
+class NumArray {
+private:
+	//time : O(n), space : O(n)
+	void buildTree(vector<int>nums) {
+		for (int i = n, j = 0; i < 2 * n; i++, j++)
+			tree[i] = nums[j];
+		for (int i = n - 1; i > 0; i--)
+			tree[i] = tree[i * 2] + tree[i * 2 + 1];
+	}
 
+public:
+	vector<int>tree;
+	int n;
+	NumArray(vector<int>& nums) {
+		if (nums.size() > 0) {
+			n = nums.size();
+			tree.resize(2 * n);
+			buildTree(nums);
+		}
+	}
+
+	//time : O(logn), there are logn levels, space : O(1)
+	void update(int pos, int val) {
+		pos += n;
+		tree[pos] = val;
+		while (pos > 0) {
+			int left = pos, right = pos;
+			if (pos % 2 == 0) right = pos + 1;
+			else left = pos - 1;
+			tree[pos / 2] = tree[left] + tree[right];
+			pos /= 2;
+		}
+	}
+	//time : O(logn) => on each iteration we move 1 level up, soace : O(1) 
+	int sumRange(int l, int r) {
+		l += n, r += n;
+		int sum = 0;
+		while (l <= r) {
+			if (l % 2 == 1) sum += tree[l], l++;
+			if (r % 2 == 0) sum += tree[r], r--;
+			l /= 2, r /= 2;
+		}
+		return sum;
+	}
+};
 
 //print a vector
 void print(vector<int>A) {
@@ -67,6 +112,13 @@ int findOddOccuringNumber(vector<int>v) {
 	int n = v.size(), res = 0;
 	for (auto x : v) res ^= x;
 	return res;
+}
+
+int dp_pascal[2001][2001] = {};
+long long comb(int n, int m) {
+	return n == 0 or m == 0 ? 1 :
+		dp_pascal[n][m] ? dp_pascal[n][m] : 
+			dp_pascal[n][m] = (comb(n - 1, m) + comb(n, m - 1)) % 1000000007;
 }
 
 //given day, month, year find weekday 
@@ -124,7 +176,6 @@ vector<int>subarrayBitWiseOr(vector<int>A) {
 	return v;
 }
 
-
 void tower_of_hanoi(int n, char a, char b, char c) {
 	if (n == 1) {
 		cout << a << " " << c << endl;
@@ -135,7 +186,6 @@ void tower_of_hanoi(int n, char a, char b, char c) {
 	tower_of_hanoi(n - 1, b, a, c);
 	return;
 }
-
 
 
 //given a target, find 2 numbers in array(not equal) whoose sum is equal to target, assuming that solution exists.
@@ -491,4 +541,111 @@ int atMost(vector<int>A, int k) {
 }
 int subarraysWithKDistinct(vector<int>A, int k) {
 	return atMost(A, k) - atMost(A, k - 1);
+}
+
+//https://leetcode.com/problems/prison-cells-after-n-days/
+vector<int>prisonAfterNDays(vector<int>c, int n) {
+	vector<int>fc, next_c(c.size());
+	for (int cycle = 0; n-- > 0; c = next_c, cycle++) {
+		for (int i = 1; i < c.size() - 1; i++) next_c[i] = c[i - 1] == c[i + 1];
+		if (cycle == 0) fc = next_c;
+		else if (next_c == fc) n %= cycle;
+	}
+	return c;
+}
+
+//https://leetcode.com/problems/subarray-sums-divisible-by-k/
+//number of non-empty subarrays whoose sum is divisible by k
+int subarraysDivByK(vector<int>A, int k) {
+	int n = A.size(), ans = 0, sum = 0;
+	vector<int>count(k);
+	count[0] = 1;
+	for (auto c : A) {
+		sum += c;
+		int rem = ((sum % k) + k ) % k; //add k because there are negative numbers
+		ans += count[rem];
+		count[rem]++;
+	}
+	return ans;
+}
+
+//https://leetcode.com/problems/minimum-adjacent-swaps-for-k-consecutive-ones/
+int minMoves(vector<int>nums, int k) {
+	vector<long>A, B(1);
+	for (int i = 0; i < nums.size(); i++)
+		if (nums[i]) A.push_back(i); //all indexes of 1's
+	long n = A.size(), res = 2e9 + 7;
+	for (int i = 0; i < n; i++)
+		B.push_back(B[i] + A[i]); //prefix sum of all indices of 1's
+	for (int i = 0; i < n - k + 1; i++)
+		res = min(res, B[i + k] - B[k / 2 + i] - B[(k + 1) / 2 + i] + B[i]);
+	res -= (k/2) * (k + 1) / 2;
+	return res;
+}
+
+//XOR queries
+vector<int> xorQueries(vector<int>nums, vector<vector<int>>q) {
+	int n = size(nums);
+	vector<int>pre(n), res;
+	for (int i = 1; i < n; i++)
+		nums[i] ^= nums[i - 1];
+	for (auto c : q) {
+		int l = c[0], r = c[1];
+		res.push_back(l > 0 ? nums[l - 1] ^ nums[r] : nums[r]);
+	}
+	return res;
+}
+
+
+//https://leetcode.com/problems/single-number-iii/
+//vector<int> singleNumber(vector<int> nums) {
+//	unsigned int xr = 0;
+//	int a = 0, b = 0;
+//	for (auto n : nums) xr ^= n;
+//	xr &= -xr;
+//	for (auto c : nums)
+//		if (xr & c) b ^= c;
+//		else a ^= c;
+//	return { a, b };
+//}
+
+//https://leetcode.com/problems/decode-xored-permutation/
+//vector<int> decodeXORedPermutation(vector<int>& A) {
+//	int n = A.size() + 1, a = 0;
+//	for (int i = 0; i <= n; i++) {
+//		a ^= i;
+//		if (i < n and i % 2 == 1)
+//			a ^= A[i];
+//	}
+//	vector<int>res = { a };
+//	for (int a : A)
+//		res.push_back(res.back() ^ a);
+//	return res;
+//}
+
+//every number in array occurs k times except 1 element. find that element
+int singleNumberK(vector<int>& nums, int k = 3) {
+	int n = nums.size();
+	vector<int>t(32);
+	for (int i = 0; i < n; i++) {
+		int a = nums[i];
+		for (int j = 31; j >= 0; j--) {
+			t[j] += a & 1, a >>= 1;
+			if (!a) break;
+		}
+	}
+	int res = 0;
+	for (int j = 31; j >= 0; j--) {
+		int a = t[j] % k;
+		if (k) res += 1 << (31 - j);
+	}
+	return res;
+}
+
+//reverse bits of unsigned 32 bit integer
+uint32_t reverseBits(uint32_t n) {
+	long res = 0;
+	for (int i = 0; i < 32; i++)
+		res = (res << 1) + ((n >> i) & 1);
+	return res;
 }
