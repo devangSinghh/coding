@@ -88,3 +88,54 @@ int reachNumber(int target) {
 	while (abs(sum - target) % 2 != 0) sum += ++steps;
 	return steps;
 }
+
+//https://leetcode.com/problems/k-diff-pairs-in-an-array/
+int findPairs(vector<int>& nums, int k) {
+	unordered_map<int, int>u;
+	int ans = 0;
+	for (auto n : nums) u[n]++;
+	for (auto c : u)
+		if ((!k and c.second > 1) or (k and u.count(c.first + k))) ++ans;
+	return ans;
+}
+
+int minSumOfLengths(vector<int>& arr, int tar) {
+	int n = arr.size(), cursum = 0;
+	int dp[100005][3];  //if asking for n subarrays, change 3 to n+1
+	unordered_map<int, int> sm;  // keep track of (prefixsum : index)
+	sm[0] = 0;
+	memset(dp, 127, sizeof(dp));  //initialize to INF
+	for (int i = 0; i < 100005; i++) dp[i][0] = 0;  //if we doesn't find a subarray, len = 0
+
+	for (int i = 1; i <= n; i++) {
+		int d = -1;  //initialize to -1
+		cursum += arr[i - 1];
+		sm[cursum] = i;
+		if (sm.count(cursum - tar)) d = sm[cursum - tar];
+
+		for (int j = 1; j <= 2; j++) {  // if asking for n subarrays, change 2 to n
+			dp[i][j] = min(dp[i][j], dp[i - 1][j]);  //dp[i][j] must <= dp[i-1][j]
+			if (d != -1) dp[i][j] = min(dp[i][j], dp[d][j - 1] + i - d);
+		}
+	}
+	if (dp[n][2] > 1e9) return -1;   // if asking for n subarrays, change 2 to n
+	return dp[n][2];   // if asking for n subarrays, change 2 to n
+}
+
+//https://leetcode.com/problems/find-two-non-overlapping-sub-arrays-each-with-target-sum/
+int minSumOfLengths(vector<int>& nums, int target) {
+	int n = nums.size(), j = 0, sum = 0, INF = 1e9 + 7, ans = INF, minLen = INF;
+	vector<int>dp(n, INF);
+	for (int i = 0; i < n; i++) {
+		sum += nums[i];
+		while (j < i and sum > target)
+			sum -= nums[j++];
+		if (sum == target) {
+			if (j > 0 and dp[j - 1] != INF)
+				ans = min(ans, dp[j - 1] + i - j + 1);
+			minLen = min(minLen, i - j + 1);
+		}
+		dp[i] = minLen;
+	}
+	return ans == INF ? -1 : ans;
+}
