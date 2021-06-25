@@ -649,3 +649,29 @@ uint32_t reverseBits(uint32_t n) {
 		res = (res << 1) + ((n >> i) & 1);
 	return res;
 }
+
+//https://leetcode.com/problems/find-the-duplicate-number/
+//floyd's tottoise and hare algorithm
+int findDuplicate(vector<int>nums) {
+	if (nums.size() > 1) {
+		int s = nums[0], f = nums[nums[0]];
+		while (s != f) s = nums[s], f = nums[nums[f]];
+		f = 0;
+		while (s != f) s = nums[s], f = nums[f];
+		return s;
+	}
+	return -1;
+}
+//https://leetcode.com/problems/single-element-in-a-sorted-array/
+//You are given a sorted array consisting of only integers where every element appears exactly twice, except for one element which appears exactly once. 
+//Find this single element that appears only once.
+int singleNonDuplicate(vector<int>& nums) {
+	int n = nums.size(), l = 0, r = n - 1;
+	while (l < r) {
+		int m = l + (r - l) / 2;
+		if (m % 2 == 1) m--;
+		if (nums[m] != nums[m + 1]) r = m;
+		else l = m + 2;
+	}
+	return nums[r];
+}

@@ -110,3 +110,17 @@ int numSubmatrixSumTarget(vector<vector<int>> A, int target) {
 		}
 	return res;
 }
+//https://leetcode.com/problems/kth-smallest-element-in-a-sorted-matrix/
+int kthSmallest(vector<vector<int>>& matrix, int k) {
+	int m = matrix.size(), n = matrix[0].size(), l = matrix[0][0], r = matrix[m-1][n-1] + 1;
+	while (l < r) {
+		int mid = l + (r - l) / 2, count = 0, j = m - 1;
+		for (int i = 0; i < m; i++) {
+			while (j >= 0 and matrix[i][j] > mid) j--;
+			count += (j + 1);
+		}
+		if (count < k) l = mid + 1;
+		else r = mid;
+	}
+	return r;
+}

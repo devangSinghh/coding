@@ -277,7 +277,15 @@ int main() {
 	ios_base::sync_with_stdio(false);
 	cin.tie(NULL);
 
-	cout << (5 ^ 1);
+	vi nums = { 3 , 2 ,  5 , 3 };
+	int n = 4;
+	vector<int>v;
+	for (int i = 0; i < n; i++) {
+		int sum = 0;
+		for (int j = i; j < n; j++)
+			sum += nums[j], v.push_back(sum);
+	}
+	print(v);
 
 	return 0;
 }

@@ -126,12 +126,14 @@
     <ClCompile Include="array.cpp" />
     <ClCompile Include="backtracking.cpp" />
     <ClCompile Include="bfs.cpp" />
+    <ClCompile Include="bsearch.cpp" />
     <ClCompile Include="cf-contests.cpp" />
     <ClCompile Include="dfs.cpp" />
     <ClCompile Include="disjoint_set.cpp" />
     <ClCompile Include="dp.cpp" />
     <ClCompile Include="graph.cpp" />
     <ClCompile Include="greedy.cpp" />
+    <ClCompile Include="heap.cpp" />
     <ClCompile Include="lists.cpp" />
     <ClCompile Include="mat.cpp" />
     <ClCompile Include="maths.cpp" />

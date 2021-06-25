@@ -60,6 +60,12 @@
     <ClCompile Include="bfs.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="bsearch.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="heap.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="matrix.h">
