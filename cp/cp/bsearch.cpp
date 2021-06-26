@@ -99,7 +99,7 @@ int findPairs(vector<int>& nums, int k) {
 	return ans;
 }
 
-int minSumOfLengths(vector<int>& arr, int tar) {
+int minSumOfLengthsGeneral(vector<int>& arr, int tar) {
 	int n = arr.size(), cursum = 0;
 	int dp[100005][3];  //if asking for n subarrays, change 3 to n+1
 	unordered_map<int, int> sm;  // keep track of (prefixsum : index)
@@ -139,3 +139,32 @@ int minSumOfLengths(vector<int>& nums, int target) {
 	}
 	return ans == INF ? -1 : ans;
 }
+
+//https://leetcode.com/problems/reverse-pairs/
+int reversePairs(vector<int>& nums) {
+	function<int(int, int)> merge_sort = [&](int l, int r) {
+		if (l >= r) return 0;
+		int m = l + (r - l) / 2;
+		int count = merge_sort(l, m) + merge_sort(m + 1, r);
+		for (int j = m + 1; j <= r; j++) {
+			auto it = upper_bound(begin(nums) + l, begin(nums) + m + 1, 2L * nums[j]);
+			int d = distance(begin(nums) + l, it);
+			if (d > m) break;
+			count += m - l + 1 - d;
+		}
+		inplace_merge(begin(nums) + l, begin(nums) + m + 1, begin(nums) + r + 1);
+		return count;
+	};
+	return merge_sort(0, nums.size() - 1);
+}
+
+//https://leetcode.com/problems/nth-magical-number/
+//int nthMagicalNumber(int n, int a, int b) {
+//	long lcm = a * b / __gcd(a, b), l = 2, r = 1e14, mod = 1e9 + 7;
+//	while (l < r) {
+//		long m = (l + r) / 2;
+//		if (m / a + m / b - m / lcm < n) l = m + 1;
+//		else r = m;
+//	}
+//	return l % mod;
+//}

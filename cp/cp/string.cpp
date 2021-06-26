@@ -323,3 +323,39 @@ bool regexMatch(string s, string p) {
 	}
 	return dp[m][n];
 }
+
+
+//https://leetcode.com/problems/longest-duplicate-substring/submissions/
+//Rabin-karp and binary search
+string longestDupSubstring(string s) {
+	const int p = INT_MAX / 26 / 26 * 26 - 1; // = 82595499
+	int l = 0, r = s.size(), idx = 0;
+	while (r - l > 1) {
+		int m = l + (r - l) / 2, pow = 1, h = 0;
+		for (int i = m - 1; i >= 0; i--) {
+			h += (s[i] - 'a') * pow, h %= p;
+			pow *= 26, pow %= p;
+		}
+		unordered_multimap<int, int>h2i = { {h, 0} };
+		auto i = 0;
+		for (; i + m < s.size(); i++) {
+			h *= 26, h %= p;
+			h += (s[i + m] - 'a') - (s[i] - 'a') * pow, h %= p;
+			h += p, h %= p;
+			auto its = h2i.equal_range(h);
+			auto it = its.first;
+			for (; it != its.second; ++it) {
+				auto j = i + 1, k = it->second;
+				for (; j < i + m; ++j, ++k)
+					if (s[j] != s[k]) break;
+				if (j == i + m) break;
+			}
+			if (it != its.second) break;
+			h2i.insert({ h, i + 1 });
+		}
+		if (i + m < s.size())
+			l = m, idx = i + 1;
+		else r = m;
+	}
+	return s.substr(idx, l);
+}
