@@ -168,3 +168,34 @@ int reversePairs(vector<int>& nums) {
 //	}
 //	return l % mod;
 //}
+
+//https://leetcode.com/problems/median-of-two-sorted-arrays/
+double findMedianSortedArrays(vector<int>& nums1, vector<int>& nums2) {
+	int n1 = nums1.size(), n2 = nums2.size(), l = 0, r = 2 * n2;
+	if (n1 < n2) return findMedianSortedArrays(nums2, nums1);
+	while (l <= r) {
+		int m2 = (l + r) / 2, m1 = n1 + n2 - m2;
+		double l1 = m1 == 0 ? INT_MIN : nums1[(m1 - 1) / 2];
+		double l2 = m2 == 0 ? INT_MIN : nums2[(m2 - 1) / 2];
+		double r1 = m1 == 2 * n1 ? INT_MAX : nums1[m1 / 2];
+		double r2 = m2 == 2 * n2 ? INT_MAX : nums2[m2 / 2];
+		if (l1 > r2) l = m2 + 1;
+		else if (l2 > r1) r = m2 - 1;
+		else return (max(l1, l2) + min(r1, r2)) / 2;
+	}
+	return -1;
+}
+
+//https://leetcode.com/problems/count-of-range-sum/
+//int countRangeSum(vector<int>& nums, int lower, int upper) {
+//
+//}
+
+//https://leetcode.com/problems/fair-candy-swap/
+vector<int> fairCandySwap(vector<int>& A, vector<int>& B) {
+	unordered_set<int>set(begin(A), end(A));
+	int diff = (accumulate(begin(A), end(A), 0) - accumulate(begin(B), end(B), 0)) / 2;
+	for (auto n : B)
+		if (set.count(n + diff)) return { n + diff, n };
+	return { 0, 0 };
+}

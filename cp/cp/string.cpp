@@ -1,5 +1,4 @@
 #include "allheaders.h"
-
 using namespace std;
 
 void printVectorString(vector<string>s) {
@@ -358,4 +357,36 @@ string longestDupSubstring(string s) {
 		else r = m;
 	}
 	return s.substr(idx, l);
+}
+//remove occurances of substrings from string
+string removeOccurrences(string s, string p) {
+	int n = s.size(), m = p.size();
+	string str;
+	stack<char>stk;
+	for (int i = 0; i < n; i++) {
+		stk.push(s[i]);
+		if (stk.size() >= m) {
+			str = "";
+			for (int j = m - 1; j >= 0; j--) {
+				if (p[j] != stk.top()) {
+					int k = 0;
+					while (k < str.size()) stk.push(str[k]), k++;
+					break;
+				}
+				else {
+					str = stk.top() + str, stk.pop();
+				}
+			}
+		}
+	}
+	str = "";
+	while (!stk.empty())
+		str += stk.top(), stk.pop();
+	reverse(begin(str), end(str));
+	return str;
+}
+
+//https://leetcode.com/problems/remove-all-occurrences-of-a-substring/
+string removeOccurrencesRecursive(string& s, string part) {
+	return s.find(part) != string::npos ? removeOccurrencesRecursive(s = regex_replace(s, regex(part), ""), part) : s;
 }

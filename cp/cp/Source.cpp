@@ -7,6 +7,7 @@
 #include<string>
 #include<sstream>
 #include<math.h>
+#include<regex>
 #include "matrix.h"
 #include "array.h"
 #include "graph.h"
@@ -273,9 +274,26 @@ long counter(int n) {
 	return res;
 }
 
+bool canBeIncreasing(vector<int>& nums) {
+	int n = nums.size(), j = 1;
+	for (int i = 1; i < n; i++)
+		if (nums[j - 1] < nums[i])
+			nums[j++] = nums[i];
+
+	for (int i = 0; i < j; i++) cout << nums[i] << " ";
+	cout << "\n";
+	return n - j == 1;
+}
+
 int main() {
 	ios_base::sync_with_stdio(false);
 	cin.tie(NULL);
+
+	string s = "daabcbcf";
+	string part = "abc";
+
+	s = regex_replace(s, regex(part), "");
+	cout << s;
 
 	return 0;
 }
