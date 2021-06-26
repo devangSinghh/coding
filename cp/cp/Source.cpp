@@ -93,6 +93,38 @@ void changesign(int n){
 	//eg->  ~321=320
 }
 
+
+vector<int> spirallyTraverse(vector<vector<int> > matrix, int r, int c) //program to traverse a matrix in spiral form
+    {
+        vector<int> res;
+        int l=0,k=0;
+        while(l<r && k<c){
+            for(int i=l;i<c;++i){
+                res.push_back(matrix[k][i]);
+            }
+            k++;
+            for(int i=k;i<r;++i){
+                res.push_back(matrix[i][c-1]);
+            }
+            c--;
+            if(k<r){
+                for(int i=c-1;i>=l;--i){
+                    res.push_back(matrix[r-1][i]);
+                }
+                r--;
+            }
+            if(l<c){
+                for(int i=r-1;i>=k;--i){
+                    res.push_back(matrix[i][l]);
+                }
+                l++;
+            }
+            
+        }
+        return res;
+        
+  }
+
 int findSet(vector<int>parent, int v) {
 	if (v == parent[v])
 		return v;
