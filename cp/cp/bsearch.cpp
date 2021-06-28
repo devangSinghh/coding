@@ -195,7 +195,54 @@ double findMedianSortedArrays(vector<int>& nums1, vector<int>& nums2) {
 vector<int> fairCandySwap(vector<int>& A, vector<int>& B) {
 	unordered_set<int>set(begin(A), end(A));
 	int diff = (accumulate(begin(A), end(A), 0) - accumulate(begin(B), end(B), 0)) / 2;
-	for (auto n : B)
-		if (set.count(n + diff)) return { n + diff, n };
+	for (auto n : B) if (set.count(n + diff)) return { n + diff, n };
 	return { 0, 0 };
+}
+
+//https://leetcode.com/problems/kth-missing-positive-number/
+int findKthPositive(vector<int>& nums, int k) {
+	int l = 0, r = nums.size();
+	while (l < r) {
+		int m = (l + r) / 2;
+		if (nums[m] - 1 - m < k) l = m + 1;
+		else r = m;
+	}
+	return l + k;
+}
+
+//https://leetcode.com/problems/intersection-of-two-arrays-ii/
+vector<int> setIntersectionII(vector<int>& nums1, vector<int>& nums2) {
+	unordered_map<int, int> u;
+	vector<int>res;
+	for (auto n : nums1) u[n]++;
+	for (auto n : nums2)
+		if (u.count(n) and u[n])
+			u[n]--, res.push_back(n);
+	return res;
+}
+
+//https://leetcode.com/problems/find-a-peak-element-ii/
+vector<int> findPeakGrid(vector<vector<int>>& mat) {
+	int row_size = mat.size(), n = mat[0].size(), l = 0, r = n - 1;
+	while (l <= r) {
+		int m = l + (r - l) / 2, max_row = 0;
+		for (int i = 0; i < row_size; i++)
+			max_row = mat[max_row][m] < mat[i][m] ? i : max_row;
+		int curr = mat[max_row][m], left = -1, right = -1;
+		if (m > 0) left = mat[max_row][m - 1];
+		if (m < n - 1) right = mat[max_row][m + 1];
+		if (curr > left and curr > right) return { max_row, m };
+		else if (curr < right) l = m + 1;
+		else r = m - 1;
+	}
+	return {};
+}
+
+//https://leetcode.com/problems/maximum-distance-between-a-pair-of-values/
+int maxDistance(vector<int>& A, vector<int>& B) {
+	int m = A.size(), n = B.size(), i = 0, j = 0, mx = 0;
+	while (i < m and j < n)
+		if (A[i] > B[j]) i++;
+		else mx = max(mx, j++ - i);
+	return mx;
 }

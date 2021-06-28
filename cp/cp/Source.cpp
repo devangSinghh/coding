@@ -321,11 +321,6 @@ int main() {
 	ios_base::sync_with_stdio(false);
 	cin.tie(NULL);
 
-	string s = "daabcbcf";
-	string part = "abc";
-
-	s = regex_replace(s, regex(part), "");
-	cout << s;
 
 	return 0;
 }

@@ -41,4 +41,15 @@ https://leetcode.com/problems/koko-eating-bananas/
 https://practice.geeksforgeeks.org/problems/trapping-rain-water-1587115621/1
 
 BackTracking
-https://leetcode.com/problems/verbal-arithmetic-puzzle/
+https://leetcode.com/problems/verbal-arithmetic-puzzle
+
+
+
+dicsuss
+https://leetcode.com/problems/single-element-in-a-sorted-array/discuss/1300606/C%2B%2B-short-and-super-easy
+https://leetcode.com/problems/capacity-to-ship-packages-within-d-days/discuss/1300379/c-short-solution-with-explanation
+https://leetcode.com/problems/find-a-peak-element-ii/discuss/1300137/c-short-solution-with-explanation
+https://leetcode.com/problems/find-the-distance-value-between-two-arrays/discuss/1299071/sort-and-do-as-it-says
+https://leetcode.com/problems/kth-smallest-element-in-a-sorted-matrix/discuss/1300725/C%2B%2B-short-and-simple 
+https://leetcode.com/problems/time-based-key-value-store/discuss/1300794/C%2B%2B-short-and-simple
+https://leetcode.com/problems/koko-eating-bananas/discuss/1301088/C%2B%2B-short-and-easy
