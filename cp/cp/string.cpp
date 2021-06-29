@@ -25,7 +25,7 @@ bool ends_with(string s, string t) {
 
 //check if string s1 is subsequence of s2 (the function is effective even if s1 is of order 1e9)
 bool checkSubSequence(string s1, string s2) {
-	char* s = &s1[0]; char* t = &s2[0];
+	char *s = &s1[0], *t = &s2[0];
 	for (; *t; s += *s == *t++);
 	return !*s;
 }
@@ -389,4 +389,82 @@ string removeOccurrences(string s, string p) {
 //https://leetcode.com/problems/remove-all-occurrences-of-a-substring/
 string removeOccurrencesRecursive(string& s, string part) {
 	return s.find(part) != string::npos ? removeOccurrencesRecursive(s = regex_replace(s, regex(part), ""), part) : s;
+}
+
+//https://leetcode.com/problems/shuffle-string/
+//cyclic sort
+string restoreString(string s, vector<int>& indices) {
+	for (int i = 0; i < indices.size(); i++)
+		while (indices[i] != i)
+			swap(s[i], s[indices[i]]), swap(indices[i], indices[indices[i]]);
+	return s;
+}
+//https://leetcode.com/problems/fraction-to-recurring-decimal/
+string fractionToDecimal(int num, int den) {
+	if (!num) return "0";
+	string s;
+	if (num > 0 ^ den > 0) s += "-";
+	long n = labs(num), d = labs(den), r = n % d;
+	s += to_string(n / d);
+	if (!r) return s;
+	s += ".";
+	unordered_map<int, int>u;
+	while (r) {
+		if (u.count(r) > 0) {
+			s.insert(u[r], "(");
+			s += ")";
+			break;
+		}
+		u[r] = s.size();
+		r *= 10;
+		s += to_string(r / d);
+		r %= d;
+	}
+	return s;
+}
+
+//https://leetcode.com/problems/decoded-string-at-index/
+string decodeAtIndex(string s, int k) {
+	long n = s.size(), sz = 0;
+	for (int i = 0; i < n; i++) {
+		if (isdigit(s[i])) sz *= s[i] - '0';
+		else sz++;
+	}
+	for (int i = n - 1; i >= 0; i--) {
+		k %= sz;
+		if (k == 0 and isalpha(s[i])) return string(1, s[i]);
+		if (isdigit(s[i])) sz /= s[i] - '0';
+		else sz--;
+	}
+	return s.substr(k, 1);
+}
+
+//https://leetcode.com/problems/split-two-strings-to-make-palindrome/
+bool checkPalindromeFormation(string a, string b) {
+	auto isPalindrome = [](string s, int i, int j) {
+		while (i < j and s[i] == s[j])
+			i++, j--;
+		return i >= j;
+	};
+	auto check = [&](string a, string b) {
+		int l = 0, r = a.size() - 1;
+		while (l < r and a[l] == b[r]) l++, r--;
+		return isPalindrome(a, l, r) or isPalindrome(b, l, r);
+	};
+	return check(a, b) or check(b, a);
+}
+
+//https://leetcode.com/problems/largest-number/
+string largestNumber(vector<int>& nums) {
+	sort(begin(nums), end(nums), [](auto m, auto n) {
+		long a(m), b(n);
+		int i(10), j(10);
+		while (m /= 10) i *= 10;
+		while (n /= 10) j *= 10;
+		return a * j + b > b * i + a;
+		});
+	if (!nums[0]) return "0";
+	string s;
+	for (auto n : nums) s += to_string(n);
+	return s;
 }

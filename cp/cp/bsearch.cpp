@@ -246,3 +246,116 @@ int maxDistance(vector<int>& A, vector<int>& B) {
 		else mx = max(mx, j++ - i);
 	return mx;
 }
+
+//https://leetcode.com/problems/most-profit-assigning-work/
+int maxProfitAssignment(vector<int>& diff, vector<int>& profit, vector<int>& worker) {
+	int n = diff.size(), p = 0, i = 0, mx_profit = 0;
+	vector<pair<int, int>>v;
+	for (int i = 0; i < n; i++) v.push_back({ diff[i], profit[i] });
+	sort(begin(v), end(v)), sort(begin(worker), end(worker));
+	for (auto w : worker) {
+		while (i < n and w >= v[i].first)
+			mx_profit = max(mx_profit, v[i++].second);
+		p += mx_profit;
+	}
+	return p;
+}
+
+//https://leetcode.com/problems/number-of-subsequences-that-satisfy-the-given-sum-condition/
+int numSubseq(vector<int>& nums, int target) {
+	long n = nums.size(), mod = 1e9 + 7, ans = 0, l = 0, r = n - 1;
+	vector<int>pre(n, 1);
+	for (int i = 1; i < n; i++)
+		pre[i] = (pre[i - 1] * 2) % mod; //precomputing to avoid overflow
+	sort(begin(nums), end(nums));
+	while (l <= r) {
+		if (nums[l] + nums[r] <= target) ans = (ans + pre[r - l++]) % mod;
+		else r--;
+	}
+	return ans % mod;
+}
+
+
+//https://leetcode.com/problems/shortest-subarray-to-be-removed-to-make-array-sorted/
+//Given an integer array arr, remove a subarray (can be empty) from arr such that the remaining elements in arr are non-decreasing.
+//Return the length of the shortest subarray to remove
+int findLengthOfShortestSubarray(vector<int>& nums) {
+	int n = nums.size(), i = 0, j = n - 1, minlen = INT_MAX;
+	for (j = n - 1; j > 0; j--)
+		if (nums[j - 1] > nums[j]) break;
+	if (j == 0) return 0;
+	minlen = j;
+	for (int i = 0; i < n; i++) {
+		if (i > 0 and nums[i - 1] > nums[i]) break;
+		while (j < n and nums[i] > nums[j]) j++;
+		minlen = min(minlen, j - i - 1);
+	}
+	return minlen;
+}
+
+//https://leetcode.com/problems/search-in-rotated-sorted-array-ii/
+//search in array (array contains duplicates)
+bool searchRotatedSortedArray(vector<int>& nums, int t) {
+	int n = nums.size(), l = 0, r = n - 1;
+	while (l < r) {
+		int m = l + (r - l) / 2;
+		if (nums[m] == t) return true;
+		if (nums[l] < nums[m])
+			if (t >= nums[l] and t < nums[m]) r = m - 1;
+			else l = m + 1;
+		else if (nums[m] < nums[r])
+			if (t > nums[m] and t <= nums[r]) l = m + 1;
+			else r = m - 1;
+		else
+			if (nums[l] == nums[m]) l++;
+			else if (nums[r] == nums[m]) r--;
+	}
+	return nums[l] == t ? true : false;
+}
+
+//https://leetcode.com/problems/frequency-of-the-most-frequent-element/
+int maxFrequency(vector<int>A, long k) {
+	int n = A.size(), i = 0, j = 0;
+	sort(begin(A), end(A));
+	for (i = 0; i < n; i++) {
+		k += A[i];
+		if (k < (long)(i - j + 1) * A[i])
+			k -= A[j++];
+	}
+	return i - j;
+}
+
+//https://leetcode.com/problems/maximum-number-of-removable-characters/
+int maximumRemovals(string s, string p, vector<int>& re) {
+	int n = re.size(), l = 0, r = n;
+	auto isSubsequence = [](string s1, string s2) {
+		char* s = &s1[0], * t = &s2[0];
+		for (; *t; s += *s == *t++);
+		return !*s;
+	};
+	while (l <= r) {
+		int m = (l + r) / 2;
+		string letters = s;
+		for (int i = 0; i < m; i++) letters[re[i]] = '/';
+		if (isSubsequence(p, letters)) l = m + 1;
+		else {
+			for (int i = 0; i < m; i++) letters[re[i]] = s[re[i]];
+			r = m - 1;
+		}
+	}
+	return r;
+}
+
+//https://leetcode.com/problems/ways-to-split-array-into-three-subarrays/
+int waysToSplit(vector<int>& nums) {
+	int n = nums.size(), ans = 0, mod = 1e9+7;
+	partial_sum(begin(nums), end(nums), begin(nums));
+	for (int i = 0, j = 0, k = 0; i < n - 2; i++) {
+		j = max(i + 1, j);
+		while (j < n - 1 and nums[j] < nums[i] * 2) j++;
+		k = max(j, k);
+		while (k < n - 1 and nums[k] - nums[i] <= nums[n - 1] - nums[k]) k++;
+		ans = (ans + j - i) % mod;
+	}
+	return ans;
+}
