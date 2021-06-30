@@ -675,3 +675,22 @@ int singleNonDuplicate(vector<int>& nums) {
 	}
 	return nums[r];
 }
+
+//https://leetcode.com/problems/delete-columns-to-make-sorted-ii/submissions/
+int minDeletionSize(vector<string>& v) {
+	int res = 0, m = v.size(), n = v[0].size(), i, j;
+	vector<bool>sorted(m - 1);
+	for (j = 0; j < n; j++) {
+		for (i = 0; i < m - 1; i++) {
+			if (!sorted[i] and v[i][j] > v[i + 1][j]) {
+				res++;
+				break;
+			}
+		}
+		if (i < m - 1) continue;
+		for (i = 0; i < m - 1; i++)
+			if (!sorted[i] and v[i][j] < v[i + 1][j])
+				sorted[i] = true;
+	}
+	return res;
+}

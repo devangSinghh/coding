@@ -488,3 +488,36 @@ string largestNumber(vector<int>& nums) {
 	for (auto n : nums) s += to_string(n);
 	return s;
 }
+
+//https://leetcode.com/problems/number-of-wonderful-substrings/
+int get_hash(char& c) {
+	return 1 << (c - 'a');
+}
+long long wonderfulSubstrings(string word) {
+	int count[1 << 10] = { 1 };
+	int running = 0;
+	long long res = 0;
+	for (auto& c : word) {
+		running ^= get_hash(c);
+		for (char ch = 'a'; ch <= 'j'; ch++)
+			res += count[running ^ get_hash(ch)];
+		res += count[running];
+		count[running] ++;
+	}
+	return res;
+}
+
+//https://leetcode.com/problems/can-make-palindrome-from-substring/
+vector<bool> canMakePaliQueries(string s, vector<vector<int>>& queries) {
+	int mask = 0;
+	vector<int>ps(1);
+	for (auto c : s)
+		ps.push_back(mask ^= 1 << (c - 'a'));
+	vector<bool>ans;
+	for (auto q : queries) {
+		int l = q[0], r = q[1], k = q[2];
+		int odds = __builtin_popcount(ps[r + 1] ^ ps[l]);
+		ans.push_back(odds / 2 <= k);
+	}
+	return ans;
+}

@@ -321,6 +321,41 @@ int main() {
 	ios_base::sync_with_stdio(false);
 	cin.tie(NULL);
 
-
+	vector<int>count = { 3, 2, 4, 4 };
+	cout << all_of(begin(count), end(count), [](int i) {return i < 11; });
 	return 0;
+}
+
+//https://leetcode.com/problems/multiply-strings/
+string multiply(string s, string t) {
+	int m = s.size(), n = t.size();
+	string ans(m + n, '0');
+	for (int i = m - 1; i >= 0; i--) {
+		for (int j = n - 1; j >= 0; j--) {
+			int sum = (s[i] - '0') * (t[i] - '0') + ans[i + j + 1];
+			ans[i + j + 1] = sum % 10 + '0';
+			ans[i + j] += sum / 10;
+		}
+	}
+
+	for (int i = 0; i < m + n; i++)
+		if (ans[i] != '0') return ans.substr(i);
+	return "0";
+}
+
+//https://leetcode.com/problems/swap-adjacent-in-lr-string/
+bool canTransform(string start, string end) {
+	int n = start.size();
+	string s, t;
+	for (auto c : start) if (c != 'X') s += c;
+	for (auto c : end) if (c != 'X') t += c;
+	if (s != t) return false;
+	for (int i = 0, j = 0; i < n and j < n;)
+		if (start[i] == 'X') i++;
+		else if (end[j] == 'X') j++;
+		else {
+			if ((start[i] == 'L' and i < j) or (start[i] == 'R' and i > j)) return false;
+			i++, j++;
+		}
+	return true;
 }
