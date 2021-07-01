@@ -35,6 +35,7 @@ Graph
 https://www.interviewbit.com/problems/commutable-islands/
 
 String
+https://leetcode.com/problems/rank-teams-by-votes/
 
 Binary Search
 https://leetcode.com/problems/koko-eating-bananas/
@@ -46,6 +47,8 @@ https://leetcode.com/problems/verbal-arithmetic-puzzle
 
 
 dicsuss
+
+https://leetcode.com/problems/repeated-string-match/discuss/1306316/c-easy-kmp-search
 https://leetcode.com/problems/single-element-in-a-sorted-array/discuss/1300606/C%2B%2B-short-and-super-easy
 https://leetcode.com/problems/capacity-to-ship-packages-within-d-days/discuss/1300379/c-short-solution-with-explanation
 https://leetcode.com/problems/find-a-peak-element-ii/discuss/1300137/c-short-solution-with-explanation

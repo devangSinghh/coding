@@ -1,5 +1,10 @@
 #include "allheaders.h"
+#ifdef _MSC_VER
+#  include <intrin.h>
+#  define __builtin_popcount __popcnt
+#endif
 using namespace std;
+const int inf = INT_MAX;
 
 void printVectorString(vector<string>s) {
 	for (auto c : s) cout << c << " ";
@@ -103,26 +108,6 @@ void grayCode(int n) {
 		k.erase(begin(k), begin(k) + 16 - n);
 		cout << "gray code : " << k << "\n";
 	}
-}
-
-int romanToDecimal(string &str) {
-    map<char,int> m;
-    m['I']=1;
-    m['V']=5;
-    m['X']=10;
-    m['L']=50;
-    m['C']=100;
-    m['D']=500;
-    m['M']=1000;
-    int sum=0;
-    for(int i=0;i<str.size();i++){
-        if(m[str[i]]<m[str[i+1]]){
-            sum+=m[str[i+1]]-m[str[i]];
-            i++;
-        }
-        else sum+=m[str[i]];
-    }
-    return sum;
 }
 
 vector<vector<bool>>visitedWord;
@@ -378,36 +363,16 @@ string longestDupSubstring(string s) {
 	}
 	return s.substr(idx, l);
 }
-//remove occurances of substrings from string
-string removeOccurrences(string s, string p) {
-	int n = s.size(), m = p.size();
-	string str;
-	stack<char>stk;
-	for (int i = 0; i < n; i++) {
-		stk.push(s[i]);
-		if (stk.size() >= m) {
-			str = "";
-			for (int j = m - 1; j >= 0; j--) {
-				if (p[j] != stk.top()) {
-					int k = 0;
-					while (k < str.size()) stk.push(str[k]), k++;
-					break;
-				}
-				else {
-					str = stk.top() + str, stk.pop();
-				}
-			}
-		}
-	}
-	str = "";
-	while (!stk.empty())
-		str += stk.top(), stk.pop();
-	reverse(begin(str), end(str));
-	return str;
-}
-
 //https://leetcode.com/problems/remove-all-occurrences-of-a-substring/
+//remove occurances of substrings from string
 string removeOccurrencesRecursive(string& s, string part) {
+	//string t;
+	//for (int i = 0; i < s.size(); i++) {
+	//	t += s[i];
+	//	if (t.size() >= 3 and t.substr(t.length() - 3, 3) == "abc")
+	//		t = t.substr(0, t.length() - 3);
+	//}
+	//return t;
 	return s.find(part) != string::npos ? removeOccurrencesRecursive(s = regex_replace(s, regex(part), ""), part) : s;
 }
 
@@ -520,4 +485,269 @@ vector<bool> canMakePaliQueries(string s, vector<vector<int>>& queries) {
 		ans.push_back(odds / 2 <= k);
 	}
 	return ans;
+}
+
+//https://leetcode.com/problems/minimum-number-of-swaps-to-make-the-binary-string-alternating/
+//Given a binary string s, return the minimum number of character swaps to make it alternating, or -1 if it is impossible.
+int minSwaps(string s) {
+	int ones = 0, zeros = 0;
+	for (auto c : s)
+		if (c == '1') ones++;
+		else zeros++;
+	if (abs(ones - zeros) > 1) return -1;
+	auto swaps = [&](string s, char c) {
+		int cnt = 0;
+		for (auto ch : s) {
+			if (ch != c) cnt++;
+			c ^= 1;
+		}
+		return cnt / 2;
+	};
+
+	if (ones > zeros)
+		return swaps(s, '1');
+	else if (zeros > ones)
+		return swaps(s, '0');
+	return min(swaps(s, '0'), swaps(s, '1'));
+}
+
+//https://leetcode.com/problems/zigzag-conversion/
+string convert(string s, int rows, string res = "") {
+	int n = s.size(), j = rows, i = 0;
+	vector<string>v(rows, "");
+	while (i < n) {
+		for (int j = 0; i < n and j < rows; j++)
+			v[j].push_back(s[i++]);
+		for (int j = rows - 2; j >= 1 and i < n; j--)
+			v[j].push_back(s[i++]);
+	}
+	for (auto s : v) res += s;
+	return res;
+}
+
+//https://leetcode.com/problems/multiply-strings/
+string multiply(string s, string t) {
+	int m = s.size(), n = t.size();
+	string ans(m + n, '0');
+	for (int i = m - 1; i >= 0; i--) {
+		for (int j = n - 1; j >= 0; j--) {
+			int sum = (s[i] - '0') * (t[i] - '0') + ans[i + j + 1];
+			ans[i + j + 1] = sum % 10 + '0';
+			ans[i + j] += sum / 10;
+		}
+	}
+
+	for (int i = 0; i < m + n; i++)
+		if (ans[i] != '0') return ans.substr(i);
+	return "0";
+}
+
+//https://leetcode.com/problems/swap-adjacent-in-lr-string/
+bool canTransform(string start, string end) {
+	int n = start.size();
+	string s, t;
+	for (auto c : start) if (c != 'X') s += c;
+	for (auto c : end) if (c != 'X') t += c;
+	if (s != t) return false;
+	for (int i = 0, j = 0; i < n and j < n;)
+		if (start[i] == 'X') i++;
+		else if (end[j] == 'X') j++;
+		else {
+			if ((start[i] == 'L' and i < j) or (start[i] == 'R' and i > j)) return false;
+			i++, j++;
+		}
+	return true;
+}
+
+//https://leetcode.com/problems/shortest-distance-to-a-character/
+vector<int> shortestToChar(string s, char c) {
+	int n = s.size();
+	vector<int>res(n, n);
+	int pos = -n;
+	for (int i = 0; i < n; i++) {
+		if (s[i] == c) pos = i;
+		res[i] = i - pos;
+	}
+	for (int i = n - 1; i >= 0; i--) {
+		if (s[i] == c) pos = i;
+		res[i] = min(res[i], abs(pos - i));
+	}
+	return res;
+}
+
+//https://leetcode.com/problems/count-substrings-that-differ-by-one-character/
+//find the number of substrings in s that differ from some substring in t by exactly one character.
+//For example, the underlined substrings in "computer" and "computation" only differ by the 'e'/'a', so this is a valid way.
+int countSubstrings(string s, string t) {
+	int res = 0, m = s.length(), n = t.length();
+	auto helper = [&](int i, int j) {
+		int res = 0, pre = 0, curr = 0;
+		while (i < m and j < n) {
+			curr++;
+			if (s[i++] != t[j++]) pre = curr, curr = 0;
+			res += pre;
+		}
+		return res;
+	};
+	for (int i = 0; i < s.size(); i++)
+		res += helper(i, 0);
+	for (int j = 1; j < t.size(); j++)
+		res += helper(0, j);
+	return res;
+}
+
+
+//https://leetcode.com/problems/sum-of-beauty-of-all-substrings/
+//The beauty of a string is the difference in frequencies between the most frequent and least frequent characters.
+//For example, the beauty of "abaacc" is 3 - 1 = 2
+//Given a string s, return the sum of beauty of all of its substrings.
+int beautySum(string s) {
+	int n = s.size(), ans = 0;
+	auto minmax = [](vector<int>& v) {
+		int mn = inf, mx = -inf;
+		for (auto n : v) {
+			if (mx < n) mx = n;
+			if (n and mn > n) mn = n;
+		}
+		return make_pair(mn, mx);
+	};
+	for (int l = 2; l <= n; l++) {
+		vector<int>count(26);
+		for (int i = 0; i < l; i++) ++count[s[i] - 'a'];
+		auto p = minmax(count);
+		ans += p.second - p.first;
+
+		for (int j = l; j < n; j++) {
+			++count[s[j] - 'a'], --count[s[j - l] - 'a'];
+			auto p = minmax(count);
+			ans += p.second - p.first;
+		}
+	}
+	return ans;
+}
+
+//https://leetcode.com/problems/different-ways-to-add-parentheses/
+vector<int> diffWaysToCompute(string expr) {
+	unordered_map<string, vector<int>>results;
+	function<vector<int>(string)>compute = [&](string s) {
+		vector<int>result;
+		int n = s.size();
+		for (int i = 0; i < n; i++) {
+			char c = s[i];
+			if (ispunct(c)) {
+				vector<int>result1, result2;
+				string substr = s.substr(0, i);
+				if (results.find(substr) != results.end())
+					result1 = results[substr];
+				else result1 = compute(substr);
+				substr = s.substr(i + 1);
+				if (results.find(substr) != results.end())
+					result2 = results[substr];
+				else result2 = compute(substr);
+				for (int a : result1)
+					for (int b : result2)
+						result.push_back(c == '+' ? a + b : c == '-' ? a - b : a * b);
+			}
+		}
+		if (result.empty()) result.push_back(stoi(s));
+		results[s] = result;
+		return result;
+	};
+	return compute(expr);
+}
+
+
+//https://leetcode.com/problems/camelcase-matching/
+//A query word matches a given pattern if we can insert lowercase letters to the pattern word so that it equals the query
+//queries = ["FooBar","FooBarTest","FootBall","FrameBuffer","ForceFeedBack"], pattern = "FB"
+//answer => [true,false,true,true,false]
+vector<bool> camelMatch(vector<string>& queries, string s) {
+	auto string_match = [](string s, string t) {
+		int i = 0; 
+		for (auto c : s)
+			if (i < t.length() and c == t[i]) i++;
+			else if (c < 'a') return false;
+		return i == t.length();
+	};
+	vector<bool>ans;
+	for (auto q : queries)
+		ans.push_back(string_match(q, s));
+	return ans;
+}
+
+//Integer to Roman conversion
+string intToRoman(int n) {
+	vector<string> M = { "", "M", "MM", "MMM" };
+	vector<string> C = { "", "C", "CC", "CCC", "CD", "D", "DC", "DCC", "DCCC", "CM" };
+	vector<string> X = { "", "X", "XX", "XXX", "XL", "L", "LX", "LXX", "LXXX", "XC" };
+	vector<string> I = { "", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX" };
+	return M[n / 1000] + C[(n % 1000) / 100] + X[(n % 100) / 10] + I[n % 10];
+}
+
+int romanToDecimal(string& s) {
+	map<char, int>m;
+	int n = 0;
+	m['I'] = 1, m['V'] = 5, m['X'] = 10, m['L'] = 50, m['C'] = 100, m['D'] = 500, m['M'] = 1000;
+	for (int i = 0; i < s.size(); i++)
+		if (m[s[i + 1]] > m[s[i]])
+			n += m[s[i + 1]] - m[s[i]], i++;
+		else n += m[s[i]];
+	return n;
+}
+
+//https://leetcode.com/problems/count-and-say/
+string countAndSay(int n) {
+	string ans = "1";
+	while (--n) {
+		string curr = "";
+		for (int i = 0; i < ans.size(); i++) {
+			int count = 1;
+			while (i < ans.size() - 1 and ans[i] == ans[i + 1]) i++, count++;
+			curr += to_string(count) + ans[i];
+		}
+		ans = curr;
+	}
+	return ans;
+}
+
+//You are given a string s and an integer k. You can choose any character of the string and change it to any other uppercase English character. 
+//You can perform this operation at most k times.
+//Return the length of the longest substring containing the same letter you can get after performing the above operations.
+// s = "ABAB", k = 2 => 4, s = "AABABBA", k = 1 => 4 ( Replace the one 'A' in the middle with 'B' and form "AABBBBA".The substring "BBBB" has the longest length)
+int characterReplacement(string s, int k) {
+	int n = s.length(), j = 0, maxCount = 0, len = INT_MIN, count[26] = {};
+	for (int i = 0; i < n; i++) {
+		maxCount = max(maxCount, ++count[s[i] - 'A']);
+		if (i - j + 1 - maxCount > k)
+			--count[s[j++] - 'A'];
+		len = max(len, i - j + 1);
+	}
+	return len == INT_MIN ? 0 : len;
+}
+
+//given a string s, and an array of pairs of indices in the string pairs where pairs[i] = [a, b] indicates 2 indices(0-indexed) of the string
+//You can swap the characters at any pair of indices in the given pairs any number of times
+//Return the lexicographically smallest string that s can be changed to after using the swaps
+int find(vector<int>& ds, int i) {
+	return ds[i] < 0 ? i : ds[i] = find(ds, ds[i]);
+}
+string smallestStringWithSwaps(string s, vector<vector<int>>& pairs) {
+	vector<int>ds(s.size(), -1);
+	vector<vector<int>>m(s.size());
+	for (auto& p : pairs) {
+		int i = find(ds, p[0]), j = find(ds, p[1]);
+		if (i != j) ds[j] = i;
+	}
+	for (int i = 0; i < s.size(); i++)
+		m[find(ds, i)].push_back(i);
+	for (auto& ids : m) {
+		string ss = "";
+		for (auto id : ids)
+			ss += s[id];
+		sort(begin(ss), end(ss));
+		for (int i = 0; i < ids.size(); i++) {
+			s[ids[i]] = ss[i];
+		}
+	}
+	return s;
 }
