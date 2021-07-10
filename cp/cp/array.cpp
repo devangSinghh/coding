@@ -841,3 +841,32 @@ int maxSumTwoNoOverlap(vector<int>& arr, int L, int M) {
 	}
 	return res;
 }
+
+
+//minimum XOR sum of 2 arrays
+int minimumXORSum(vector<int>& nums1, vector<int>& nums2) {
+	int n = nums1.size();
+	vector<vector<int>>record(n, vector<int>(n));
+	for (int i = 0; i < n; i++)
+		for (int j = 0; j < n; j++)
+			record[i][j] = nums1[i] ^ nums2[j];
+	int c = (1 << n) - 1;
+	vector<int>dp(c + 1, -1);
+
+	function<int(int, int)> dfs = [&](int r, int c) {
+		if (r >= record.size())
+			return 0;
+		if (dp[c] != -1) return dp[c];
+
+		long long ans = INT_MAX;
+		for (int i = 0; i < record.size(); i++) {
+			if (c & (1 << i)) { // if number is present
+				int t = c;
+				t ^= (1 << i); // masrk as unvisited
+				ans = min((int)ans, record[r][i] + dfs(r + 1, t));
+			}
+		}
+		return dp[c] = ans;
+	};
+	return dfs(0, c);
+}

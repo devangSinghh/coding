@@ -700,3 +700,45 @@ int numSubmatOptimal(vector<vector<int>>& mat) {
 	}
 	return ans;
 }
+
+//burst ballons
+int maxCoins(vector<int>& A) {
+	if (A.empty()) {
+		return 0;
+	}
+	const int n = A.size();
+	vector<vector<int>>dp(n, vector<int>(n));
+
+	for (int L = n - 1; L >= 0; L--) {
+		for (int R = L; R < n; R++) {
+			for (int i = L; i <= R; i++) {
+				dp[L][R] = max(dp[L][R],
+					A[i] * (L ? A[L - 1] : 1) * (R == n - 1 ? 1 : A[R + 1])
+					+ (i - 1 >= L ? dp[L][i - 1] : 0) + (i + 1 <= R ? dp[i + 1][R] : 0));
+			}
+		}
+	}
+	return dp[0][n - 1];
+}
+
+//https://leetcode.com/problems/minimum-cost-to-merge-stones/
+int mergeStones(vector<int>& A, int k) {
+	int n = A.size();
+	if ((n - 1) % (k - 1)) return -1;
+	vector<int>pre(n + 1);
+	vector<vector<int>>dp(n, vector<int>(n));
+	for (int i = 1; i <= n; i++)
+		pre[i] = pre[i - 1] + A[i - 1];
+
+	for (int m = k; m <= n; m++) {
+		for (int i = 0; i + m <= n; i++) {
+			int j = i + m - 1;
+			dp[i][j] = INT_MAX;
+			for (int mid = i; mid < j; mid += k - 1)
+				dp[i][j] = min(dp[i][j], dp[i][mid] + dp[mid + 1][j]);
+			if ((j - i) % (k - 1) == 0)
+				dp[i][j] += pre[j + 1] - pre[i];
+		}
+	}
+	return dp[0][n - 1];
+}

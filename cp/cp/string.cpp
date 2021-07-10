@@ -20,6 +20,10 @@ bool isPalindrome(string s) {
 	return equal(begin(s), end(s), rbegin(s));
 }
 
+string binary(int n) {
+	return n == 0 ? "" : binary(n / 2) + to_string(n % 2);
+}
+
 //whether a string 's' ends with string 't'
 //bool ends_with(string value, string ending) {
 //	if (ending.size() > value.size()) return false;
@@ -1038,4 +1042,26 @@ string reverseParentheses(string s) {
 		}
 	}
 	return res;
+}
+
+
+//Given a string s, partition s such that every substring of the partition is a palindrome.
+//Return the minimum cuts needed for a palindrome partitioning of s
+int minCut(string s) {
+	int n = s.size();
+	vector<int>cuts(n + 1);
+	iota(rbegin(cuts), rend(cuts), -1);
+
+	auto extend = [&](int l, int r) {
+		while (l >= 0 and r < n and s[l] == s[r]) {
+			cuts[l] = min(cuts[l], cuts[r + 1] + 1);
+			l--, r++;
+		}
+	};
+
+	for (int i = n - 1; i >= 0; i--) {
+		extend(i, i);
+		extend(i, i + 1);
+	}
+	return cuts[0];
 }

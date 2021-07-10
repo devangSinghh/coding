@@ -60,17 +60,12 @@ long comb(int n, int k) {
 }
 
 int main() {
-	int L = 1, M = 2;
-	vi arr = { 0,6,5,2,2,5,1,9,4 };
-	int n = arr.size();
-	vector<int>pre(n + 1);
-	partial_sum(begin(arr), end(arr), begin(pre));
-	int res = pre[L + M - 1], Lmax = pre[L - 1], Mmax = pre[M - 1];
-	for (int i = L + M; i < pre.size(); i++) {
-		Lmax = max(Lmax, pre[i - M] - pre[i - L - M]);
-		Mmax = max(Mmax, pre[i - L] - pre[i - L - M]);
-		res = max(res, max(Lmax + pre[i] - pre[i - M], Mmax + pre[i] - pre[i - L]));
-	}
-	 cout << res;
-	
-} 
+
+	vi a = { 2, 4, 5,1 ,4 ,11, 22, 97, 153, 2 };
+	vi pre = { a[0] };
+	int xr = 0;
+	for (auto c : a)
+		xr ^= c;
+	cout << xr;
+
+}

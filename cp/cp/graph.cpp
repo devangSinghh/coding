@@ -310,3 +310,30 @@ int minCostConnectPoints(vector<vector<int>>& A) {
 //	};
 //	return dfs(n);
 //}
+
+//https://leetcode.com/problems/shortest-path-visiting-all-nodes/
+int shortestPathLength(vector<vector<int>>& graph) {
+	int n = graph.size(), mask = (1 << n) - 1, steps = 0;
+	vector<vector<bool>>visited(n, vector<bool>((1 << n) - 1));
+	queue<pair<int, int>>q;
+	for (int i = 0; i < n; i++) {
+		q.push({ i,  1 << i });
+		visited[i][1 << i] = true;
+	}
+	while (!q.empty()) {
+		int n = q.size();
+		while (n--) {
+			auto p = q.front(); q.pop();
+			int id = p.first, thisMask = p.second;
+			for (auto i : graph[id]) {
+				auto next = make_pair(i, thisMask | 1 << i);
+				if (next.second == mask) return steps + 1;
+				if (visited[next.first][next.second]) continue;
+				q.push(next);
+				visited[next.first][next.second] = true;
+			}
+		}
+		steps++;
+	}
+	return 0;
+}

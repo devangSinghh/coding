@@ -22,4 +22,5 @@ extern bool kmpSearch(string s, string w);
 extern void lengthOfLongestPalindromeSubString(std::string s);
 extern bool ends_with(std::string s, std::string t);
 extern int longestValidParentheses(std::string s);
+extern std::string binary(int n);
 #endif
