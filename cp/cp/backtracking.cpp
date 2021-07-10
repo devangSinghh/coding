@@ -133,30 +133,28 @@ bool canDistribute(vector<int> nums, vector<int> q, vector<int>counts = {}) {
 
 //brace expansion => "abc{d,e}f{gh,ij}" => [abcdfgh, abcdfij, abcefgh, abcefij]
 //brace can be nested for eg. "abc{d,e}f{gh,ij}gen{a{a{zz,zzz,zzzz}}lasdf,asf}"
-vector<string> braceExpansion(string a) {
-	vector<string> ans = { "" };
-	int i = 0;
-	while (i < a.size()) {
-		if (a[i] != '{') for (string& s : ans) s += a[i];
-		else {
-			vector<string> ans2;
-			int depth = 0;
-			while (a[i] != '}' or depth != 0) {
-				int j = i + 1;
-				while (depth != 0 or (a[j] != ',' and a[j] != '}')) {
-					if (a[j] == '}') depth--;
-					if (a[j] == '{') depth++;
-					j++;
-				}
-				auto ret = braceExpansion(a.substr(i + 1, j - i - 1));
-				for (string& s : ans) for (string& r : ret) ans2.push_back(s + r);
-				i = j;
-			}
-			swap(ans, ans2);
+vector<string> braceExpansionII(string expression) {
+	set<string>Set;
+	queue<string>q;
+	q.push(expression);
+	while (!q.empty()) {
+		string s = q.front(); q.pop();
+		if (s.find('{') == string::npos) {
+			Set.insert(s);
+			continue;
 		}
-		i++;
+		int l = 0, r = 0;
+		while (s[r] != '}')
+			if (s[r++] == '{') l = r;
+		string before = s.substr(0, l - 1);
+		string mid = s.substr(l, r - l);
+		string after = s.substr(r + 1);
+		stringstream ssMid(mid);
+		string temp;
+		while (getline(ssMid, temp, ','))
+			q.push(before + temp + after);
 	}
-	return ans;
+	return vector<string>(begin(Set), end(Set));
 }
 
 //sequential digits

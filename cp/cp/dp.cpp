@@ -308,6 +308,16 @@ bool canFindSubSetWithSumS(vector<int>A, int sum) {
 	return dp[n - 1][sum];
 }
 
+bool findSubsetWithGivenSum(vector<int>nums, int sum) {
+	int n = nums.size();
+	bitset<100000000>can;
+	for(int i = 0; i < n; i++) {
+		can |= (can << nums[i]);
+	}
+	return can[sum];
+}
+
+
 int shortestPathinMatrix(vector<vector<int>>mat) {
 	int m(mat.size()), n(mat[0].size());
 	vector<vector<int>>dp(m + 1, vector<int>(n + 1, mat[0][0]));
@@ -341,19 +351,6 @@ int findNumOfLongestIncreasingSubSequence(vector<int>A) {
 	return ans;
 }
 
-//https://leetcode.com/problems/super-egg-drop/
-//https://leetcode.com/problems/egg-drop-with-2-eggs-and-n-floors/discuss/1248069/Recursive-Iterative-Generic
-int superEggDrop(int n, int K) {
-	vector<vector<int>>dp(n + 1, vector<int>(K + 1, 0));
-	int m = 0;
-	while (dp[m][K] < n) {
-		m++;
-		for (int k = 1; k <= K; k++) {
-			dp[m][k] = dp[m - 1][k - 1] + dp[m - 1][k] + 1;
-		}
-	}
-	return m;
-}
 
 //https://www.geeksforgeeks.org/bitmasking-and-dynamic-programming-set-1-count-ways-to-assign-unique-cap-to-every-person/
 //Count ways to assign unique cap to every person
@@ -497,4 +494,209 @@ int countRoutes(vector<int>A, int s, int e, int fuel) { //A=>locations, s = star
 		}
 	}
 	return dpCountRoutes[s][fuel] - 1;
+}
+
+//add 2 numbers without addition
+int getSum(int a, int b) {
+	int xr = a ^ b;
+	int carry = a & b;
+	if (carry == 0) return xr;
+	carry = (carry & 0xffffffff) << 1;
+	return getSum(xr, carry);
+}
+
+//number of sub-strings in "s" and "t" differing by 1 element
+int SubstringsdifferbyOne(string s, string t) {
+	auto helper = [&](string s, string t, int i, int j) {
+		int m = s.size(), n = t.size(), res = 0, pre = 0, curr = 0;
+		while (i < m and j < n) {
+			curr++;
+			if (s[i++] != t[j++])
+				pre = curr, curr = 0;
+			res += pre;
+		}
+		return res;
+	};
+
+	int ans = 0;
+	for (int i = 0; i < s.size(); i++)
+		ans += helper(s, t, 0, i);
+	for (int j = 1; j < t.size(); j++)
+		ans += helper(s, t, j, 0);
+	return ans;
+}
+
+
+
+//https://leetcode.com/problems/super-egg-drop/
+//https://leetcode.com/problems/egg-drop-with-2-eggs-and-n-floors/discuss/1248069/Recursive-Iterative-Generic
+//super egg drop
+int superEggDrop(int k, int n) {
+	int m = 0;;
+	vector<int>dp(k + 1);
+	for (m = 0; dp[k] < n; m++)
+		for (int x = k; x > 0; x--)
+			dp[x] += dp[x - 1] + 1;
+	return m;
+}
+
+//optimal strategy game to pick stones from ends
+//print the maximum difference of scores
+//final dp[0] represents difference in scores. 
+int stoneGame(vector<int>nums) {
+	int n = nums.size();
+	vector<int>dp = nums;
+	for (int range = 1; range < n; range++)
+		for (int i = 0; i < n - range; i++)
+			dp[i] = max(nums[i] - dp[i + 1], nums[i + range] - dp[i]);
+	return dp[0];
+}
+
+//beautiful arrangement
+//arrangement => perm => i % perm[i] == 0 or perm[i] % i == 0 
+//perm consists of numbers from [1, n]
+int countArrangement(int n) {
+	int seen = 0, ans = 0;
+	function<void(int)> dfs = [&](int idx) {
+		if (idx == 0) {
+			ans++;
+			return;
+		}
+		for (int i = n; i >= 1; i--) {
+			if ((seen & (1 << i)) == 0 and (i % idx == 0 or idx % i == 0)) {
+				seen ^= (1 << i);
+				dfs(idx - 1);
+				seen ^= (1 << i);
+			}
+		}
+	};
+	dfs(n);
+	return ans;
+}
+
+//https://leetcode.com/problems/k-concatenation-maximum-sum/
+int kConcatenationMaxSum(vector<int>& nums, int k) {
+	int n = nums.size(), sum = nums[0], msum = nums[0];
+	int64_t total = accumulate(begin(nums), end(nums), 0), mod = 1e9 + 7;
+	for (long long i = 1; i < n * min(k, 2); i++) {
+		sum = max(nums[i % n], sum + nums[i % n]);
+		msum = max(msum, sum);
+	}
+	return max<int64_t>({ 0, msum, total * max(0, k - 2) + msum }) % mod;
+}
+
+//https://leetcode.com/problems/largest-divisible-subset/
+vector<int> largestDivisibleSubset(vector<int>& nums) {
+	sort(begin(nums), end(nums));
+	int n = nums.size(), ans = INT_MIN, idx = 0;
+	vector<int>dp(n, 1), parent(n, -1), res;
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j < i; j++)
+			if(nums[i] % nums[j] == 0 and dp[i] < dp[j] + 1) {
+				dp[i] = dp[j] + 1;
+				parent[i] = j;
+			}
+
+		if (dp[i] > ans)
+			ans = dp[i], idx = i;
+	}
+	while (idx != -1) {
+		res.push_back(nums[idx]); 
+		idx = parent[idx];
+	}
+
+	return res;
+}
+
+
+//longest mountain subarray
+int longestMountain(vector<int>& arr) {
+	int n = arr.size(), longest = 0, i = 1;
+	while (i < n) {
+		int up = 0, down = 0;
+		while (i < n and arr[i - 1] == arr[i]) i++;
+		while (i < n and arr[i - 1] < arr[i]) i++, up++;
+		while (i < n and arr[i - 1] > arr[i]) i++, down++;
+		if(up > 0 and down > 0)
+			longest = max(longest, up + down + 1);
+	}
+	return longest;
+}
+
+//https://leetcode.com/problems/maximum-subarray-sum-with-one-deletion/
+int maximumSum(vector<int>& arr) {
+	int n = arr.size(), no_delete = arr[0], on_delete = 0, msum = arr[0];
+	for (int i = 1; i < n; i++) {
+		on_delete = max(on_delete + arr[i], no_delete);
+		no_delete = max(no_delete + arr[i], arr[i]);
+		msum = max(msum, max(on_delete, no_delete));
+	}
+	return msum;
+}
+
+//https://leetcode.com/problems/guess-number-higher-or-lower-ii/
+int getMoneyAmount(int n) {
+	int dp[201][201] = {}, maximum = INT_MAX;
+	function<int(int, int)> minmax = [&](int lower, int upper) {
+		if (lower >= upper) return 0;
+		if (dp[lower][upper] != 0)
+			return dp[lower][upper];
+		for (int i = lower; i <= upper; i++)
+			maximum = min(maximum, max(minmax(lower, i - 1), minmax(i + 1, upper)) + i);
+		return dp[lower][upper] = maximum;
+	};
+	return minmax(1, n);
+}
+
+//number of submatrices with all 1s in a matrix
+
+//O(m^2N^2)
+int numSubmatBruteForce(vector<vector<int>>& mat) {
+	int m = mat.size(), n = mat[0].size(), ans = 0;
+
+	auto count = [&](int a, int b) {
+		int bound = n, res = 0;
+		for (int i = a; i < m; i++) {
+			for (int j = b; j < bound; j++) {
+				if (mat[i][j]) res++;
+				else bound = j;
+			}
+		}
+		return res;
+	};
+
+	for (int i = 0; i < m; i++) {
+		for (int j = 0; j < n; j++)
+			ans += count(i, j);
+	}
+	return ans;
+}
+
+//O(mn) using stack
+int numSubmatOptimal(vector<vector<int>>& mat) {
+	int m = mat.size(), n = mat[0].size(), ans = 0;
+	vector<int>h(n);
+	auto count = [](vector<int>v) {
+		int sz = v.size(), res = 0;
+		stack<int>stk;
+		vector<int>sum(sz);
+		for (int i = 0; i < sz; i++) {
+			while (!stk.empty() and v[stk.top()] >= v[i])
+				stk.pop();
+			if (!stk.empty()) {
+				int preindex = stk.top();
+				sum[i] = sum[preindex];
+				sum[i] += v[i] * (i - preindex);
+			}
+			else sum[i] = v[i] * (i + 1);
+		}
+		for (int s : sum) res += s;
+		return res;
+	};
+	for (int i = 0; i < m; i++) {
+		for (int j = 0; j < n; j++)
+			h[j] = mat[i][j] == 0 ? 0 : h[j] + 1;
+		ans += count(h);
+	}
+	return ans;
 }

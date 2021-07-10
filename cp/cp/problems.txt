@@ -36,6 +36,9 @@ https://www.interviewbit.com/problems/commutable-islands/
 
 String
 https://leetcode.com/problems/rank-teams-by-votes/
+https://leetcode.com/problems/ones-and-zeroes/
+https://leetcode.com/problems/iterator-for-combination/
+https://leetcode.com/problems/minimum-remove-to-make-valid-parentheses/
 
 Binary Search
 https://leetcode.com/problems/koko-eating-bananas/
@@ -47,7 +50,12 @@ https://leetcode.com/problems/verbal-arithmetic-puzzle
 
 
 dicsuss
-
+https://leetcode.com/problems/validate-ip-address/discuss/1320996/C%2B%2B-make-2-cases-short-implementation
+https://leetcode.com/problems/shortest-palindrome/discuss/1320851/C%2B%2B-short-Kmp
+https://leetcode.com/problems/minimum-adjacent-swaps-to-reach-the-kth-smallest-number/discuss/1318393/C%2B%2B-very-easy-with-explanations
+https://leetcode.com/problems/score-of-parentheses/discuss/1318127/Expression-tree
+https://leetcode.com/problems/rotate-string/discuss/1316140/C%2B%2B-multiple-solutions
+https://leetcode.com/problems/reformat-date/discuss/1315185/c-folks-stringstream-is-your-friend
 https://leetcode.com/problems/repeated-string-match/discuss/1306316/c-easy-kmp-search
 https://leetcode.com/problems/single-element-in-a-sorted-array/discuss/1300606/C%2B%2B-short-and-super-easy
 https://leetcode.com/problems/capacity-to-ship-packages-within-d-days/discuss/1300379/c-short-solution-with-explanation

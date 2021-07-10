@@ -6,13 +6,17 @@
 using namespace std;
 const int inf = INT_MAX;
 
+int __gcd(int a, int b) {
+	return b == 0 ? a : __gcd(a, a % b);
+}
+
 void printVectorString(vector<string>s) {
 	for (auto c : s) cout << c << " ";
 	cout << "\n";
 }
 
 //if a string is palindrome
-bool checkPalindrome(string s) {
+bool isPalindrome(string s) {
 	return equal(begin(s), end(s), rbegin(s));
 }
 
@@ -65,25 +69,21 @@ string addTwoBinaryStrings(string a, string b) {
 
 //Given a string s, return the longest palindromic substring in s
 // for eg : s = "babad" output => "bab"
-// for eg : s = "ac" output => "a"
-// for eg : s = "a" output => "a"
 string longestPalindrome(string s) {
-	if (s.size() < 2) return s;
-	int len = 0, start = 0;
+	int n = s.size();
+	string ans = "";
 
-	for (int i = 0; i < s.size();) {
-		if (s.size() - i <= len / 2) break;
-		int l = i, r = i;
-		while (r < s.size() - 1 && s[r] == s[r + 1]) r++;
-		i = r + 1;
+	auto extend = [&](int i, int j) {
+		while (i >= 0 and j < s.size() and s[i] == s[j]) i--, j++;
+		return s.substr(i + 1, j - i - 1);
+	};
 
-		while (r < s.size() - 1 && l > 0 && s[l - 1] == s[r + 1])
-			l--, r++;
-
-		if (r - l + 1 > len)
-			start = l, len = r - l + 1;
+	for (int i = 0; i < n - ans.size() / 2; i++) {
+		string a = extend(i, i), b = extend(i, i + 1);
+		if (ans.empty() or a.size() > ans.size()) ans = a;
+		if (ans.empty() or b.size() > ans.size()) ans = b;
 	}
-	return s.substr(start, len);
+	return ans;
 }
 
 //Given a string s, find the length of the longest substring without repeating characters.
@@ -750,4 +750,292 @@ string smallestStringWithSwaps(string s, vector<vector<int>>& pairs) {
 		}
 	}
 	return s;
+}
+
+//https://leetcode.com/problems/longest-word-in-dictionary/
+//string longestWord(vector<string>& words) {
+//	sort(begin(words), end(words));
+//	string answer, prevword;
+//	for (auto& currword : words) {
+//		string_view csv = currword;
+//		string_view psv = prevword;
+//		if (csv.substr(0, currword.size() - 1)
+//			== psv.substr(0, currword.size() - 1)) {
+//			prevword = currword;
+//			if (prevword.size() > answer.size())
+//				answer = prevword;
+//		}
+//		else if (currword.size() == 1) {
+//			prevword = currword;
+//		}
+//	}
+//	return answer;
+//}
+
+//https://leetcode.com/problems/maximum-score-from-removing-substrings/
+int maximumGain(string s, int x, int y) {
+	char a = 'a', b = 'b';
+	int CountA = 0, CountB = 0, gain = 0;
+	if (x < y) {
+		swap(x, y);
+		swap(a, b);
+	}
+	for (auto c : s) {
+		if (c == a)
+			CountA++;
+		else if (c == b)
+			if (CountA)
+				gain += x, CountA--;
+			else CountB++;
+		else {
+			gain += min(CountA, CountB) * y;
+			CountA = CountB = 0;
+		}
+	}
+	return gain + min(CountA, CountB) * y;
+}
+
+//https://leetcode.com/problems/permutation-in-string/
+bool checkInclusion(string s1, string s2) {
+	vector<int>current(26), target(26);
+	int m = s1.size();
+	int n = s2.size();
+	if (m > n) return false;
+	for (auto c : s1) ++target[c - 'a'];
+	for (int i = 0; i < n; i++) {
+		++current[s2[i] - 'a'];
+		if (i >= m) {
+			--current[s2[i - m] - 'a'];
+		}
+		if (current == target) return true;
+	}
+	return false;
+}
+
+//https://leetcode.com/problems/string-compression/
+int compress(vector<char>& chars) {
+	int i = 0, len = 0;
+	while (i < chars.size()) {
+		int count = 0;
+		char curr = chars[i];
+		while (i < chars.size() and curr == chars[i]) i++, count++;
+		chars[len++] = curr;
+		if (count != 1) {
+			string s = to_string(count);
+			for (auto c : s)
+				chars[len++] = c;
+		}
+	}
+	return len;
+}
+
+//https://leetcode.com/problems/valid-parenthesis-string/
+bool checkValidString(string s) {
+	int cmax = 0, cmin = 0;
+	for (auto c : s) {
+		if (c == '(')
+			cmin++, cmax++;
+		else if (c == ')')
+			cmin--, cmax--;
+		else
+			cmax++, cmin--;
+
+		if (cmax < 0) return false;
+		cmin = max(cmin, 0);
+	}
+	return cmin == 0;
+}
+
+//multipley 2 complex numbers
+string complexNumberMultiply(string a, string b) {
+	stringstream s(a), ss(b), ans;
+	char buffer;
+	int ra, rb, ia, ib;
+	s >> ra >> buffer >> ia >> buffer;
+	ss >> rb >> buffer >> ib >> buffer;
+	ans << ra * rb - ia * ib << '+' << ra * ib + rb * ia << 'i';
+	return ans.str();
+}
+
+//You are given an array of binary strings strs and two integers m and n
+//Return the size of the largest subset of strs such that there are at most m 0's and n 1's in the subset
+//strs = ["10","0001","111001","1","0"], m = 5, n = 3  => largest subset with at most 5 0's and 3 1's is {"10", "0001", "1", "0"}, answer is 4
+//count of all 0's and 1's in the subset should be less than m and n respectively
+int findMaxForm(vector<string>& str, int m, int n) {
+	vector<vector<int>>dp(m + 1, vector<int>(n + 1));
+	for (auto& s : str) {
+		int ones = count(begin(s), end(s), '1');
+		int zeros = s.size() - ones;
+		for (int i = m; i >= zeros; i--)
+			for (int j = n; j >= ones; j--)
+				dp[i][j] = max(dp[i][j], dp[i - zeros][j - ones] + 1);
+	}
+	return dp[m][n];
+}
+
+//longest common subsequence string
+string lcs(string a, string b) {
+	int m = a.size(), n = b.size(), x = m, y = n;
+	vector<vector<int>>dp(m + 1, vector<int>(n + 1));
+	for (int i = 1; i <= m; i++)
+		for (int j = 1; j <= n; j++)
+			if (a[i - 1] == b[j - 1])
+				dp[i][j] = dp[i - 1][j - 1] + 1;
+			else
+				dp[i][j] = max(dp[i - 1][j], dp[i][j - 1]);
+	string l;
+	while (x > 0 and y > 0) {
+		if (a[x - 1] == b[y - 1])
+			l.push_back(a[x - 1]), x--, y--;
+		else
+			if (dp[x - 1][y] > dp[x][y - 1]) x--;
+			else y--;
+	}
+	reverse(begin(l), end(l));
+	return l;
+}
+
+//shortest common supersequence
+string shortestCommonSupersequence(string a, string b) {
+	int i = 0, j = 0;
+	string res;
+	for (auto c : lcs(a, b)) {
+		while (a[i] != c) res += a[i++];
+		while (b[j] != c) res += b[j++];
+		res += c, i++, j++;
+	}
+	return res + a.substr(i) + b.substr(j);
+}
+
+//https://leetcode.com/problems/palindrome-partitioning-iii/
+int palindromePartitionIII(string s, int k) {
+	int n = s.size(), dp[101][101] = {}, changes[101][101] = {};
+	for (int i = n - 1; i >= 0; i--)
+		for (int j = i + 1; j < n; j++)
+			changes[i][j] = s[i] == s[j] ? changes[i + 1][j - 1] : changes[i + 1][j - 1] + 1;
+
+	for (int i = 0; i < n; i++)
+		dp[1][i] = changes[0][i];
+
+	for (int i = 2; i <= k; i++)
+		for (int j = i - 1; j < n; j++) {
+			int mn = n;
+			for (int a = i - 2; a < j; a++)
+				mn = min(mn, dp[i - 1][a] + changes[a + 1][j]);
+			dp[i][j] = mn;
+		}
+
+	return dp[k][n - 1];
+}
+
+//https://leetcode.com/problems/minimum-window-substring/
+string minWindow(string s, string t) {
+	int m = s.size(), n = t.size(), i, j = 0, minlen = INT_MAX, counter = n, start;
+	int count[128] = {};
+	for (auto c : t) ++count[c];
+	for (i = 0; i < m; i++) {
+		if (count[s[i]]-- > 0) counter--;
+		while (counter == 0) {
+			if (minlen > i - j) {
+				minlen = i - j;
+				start = j;
+			}
+			if (count[s[j++]]++ == 0) counter++;
+		}
+	}
+	return minlen == INT_MAX ? "" : s.substr(start, minlen + 1);
+}
+
+//Given a string s, return true if it is possible to split the string s into three non-empty palindromic substrings. Otherwise, return false
+bool checkPartitioning(string s) {
+	int n = s.size();
+	for (int i = n - 3; i >= 0; i--)
+		if (isPalindrome(s.substr(0, i + 1))) {
+			for (int j = n - 2; j > i; j--)
+				if (isPalindrome(s.substr(i + 1, j - i)) and isPalindrome(s.substr(j + 1))) return true;
+			i = -1;
+		}
+	return false;
+}
+
+//https://leetcode.com/problems/greatest-common-divisor-of-strings/
+//For two strings s and t, "t divides s" if and only if s = t + ... + t  (t concatenated with itself 1 or more times)
+//Given two strings a and b, return the largest string x such that x divides both a and b
+string gcdOfStrings(string a, string b) {
+	return (a + b == b + a) ? a.substr(0, __gcd(a.size(), b.size())) : "";
+}
+
+//https://leetcode.com/problems/backspace-string-compare/
+bool backspaceCompare(string s, string t) {
+	int i = s.size() - 1, j = t.size() - 1, countA = 0, countB = 0;
+	while (i >= 0 or j >= 0) {
+		while (i >= 0 and (s[i] == '#' or countA > 0))
+			s[i--] == '#' ? ++countA : --countA;
+		while (j >= 0 and (t[j] == '#' or countB > 0))
+			t[j--] == '#' ? ++countB : --countB;
+		if (i < 0 or j < 0) return i == j;
+		if (s[i--] != t[j--]) return false;
+	}
+	return i == j;
+}
+
+//number of days from 1971 - 01 - 01
+//format of string s => "2019-06-29" i.e. (YYYY-MM-DD)
+int monthDays[13] = { 0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
+int daysfrom1971(string s) {
+	int year = stoi(s.substr(0, 4)), m = stoi(s.substr(5, 2)), day = stoi(s.substr(8));
+	auto isLeap = [](int y) {
+		return y % 400 == 0 or (y % 4 == 0 and y % 100 != 0);
+	};
+	int days = day;
+
+	for (int y = 1971; y < year; y++)
+		days += isLeap(y) ? 366 : 365;
+
+	for (int i = 1; i < m; i++)
+		if (isLeap(year) and i == 2)
+			days += 29;
+		else
+			days += monthDays[i];
+	return days;
+}
+
+//normalize word
+string F(string s) {
+	unordered_map<char, int>u;
+	for (auto c : s)
+		if (!u.count(c))
+			u[c] = u.size();
+	for (auto& c : s)
+		c = 'a' + u[c];
+	return s;
+}
+
+//https://leetcode.com/problems/reverse-substrings-between-each-pair-of-parentheses/
+string reverseParentheses(string s) {
+	int n = s.length();
+	vector<int>stk, pairs(n);
+	for (int i = 0; i < n; i++) {
+		if (s[i] == '(')
+			stk.push_back(i);
+		if (s[i] == ')') {
+			int j = stk.back();
+			stk.pop_back();
+			pairs[i] = j;
+			pairs[j] = i;
+		}
+	}
+
+	string res;
+	int d = 1;
+	for (int i = 0; i < n; i += d) {
+		if (s[i] == '(' or s[i] == ')') {
+			i = pairs[i];
+			d = -d;
+		}
+		else {
+			res += s[i];
+		}
+	}
+	return res;
 }

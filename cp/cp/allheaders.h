@@ -29,6 +29,7 @@
 #include <cctype>
 #include <cwctype>
 #include <cstring>
+#include <string_view>
 #include <cwchar>
 #include <cuchar>
 #include <string>

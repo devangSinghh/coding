@@ -272,3 +272,41 @@ int minCostConnectPoints(vector<vector<int>>& A) {
         }
         return res;
  }
+
+//int countRestrictedPaths(int n, vector<vector<int>>& edges) {
+//	vector<vector<pair<int, int>>>g(n + 1);
+//	for (auto c : edges) {
+//		g[c[0]].push_back({ c[1], c[2] });
+//		g[c[1]].push_back({ c[0], c[2] });
+//	}
+//	int* dist = new int[n + 1];
+//	for (int i = 0; i <= n; i++) dist[i] = INT_MAX;
+//	set<pair<int, int>>Set;
+//	Set.insert({ 0, n });
+//	dist[n] = 0;
+//	while (!Set.empty()) {
+//		auto [d, u] = *begin(Set);
+//		Set.erase(begin(Set));
+//		for (auto c : g[u]) {
+//			int v = c.first, w = c.second;
+//			if (dist[v] > dist[u] + w) {
+//				dist[v] = dist[u] + w;
+//				Set.insert({ dist[v], v });
+//			}
+//		}
+//	}
+//	int dp[20001] = {};
+//	for (int i = 1; i <= n; i++) dp[i] = -1;
+//	function<int(int)> dfs = [&](int s) {
+//		if (s == 1) return 1;
+//		if (dp[s] != -1) return dp[s];
+//		int count = 0;
+//		for (auto& [v, w] : g[s]) {
+//			int d_v = dist[v], d_s = dist[s];
+//			if (d_v > d_s)
+//				count = (count % mod + dfs(v) % mod) % mod;
+//		}
+//		return dp[s] = count;
+//	};
+//	return dfs(n);
+//}

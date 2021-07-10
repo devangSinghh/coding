@@ -66,6 +66,9 @@
     <ClCompile Include="heap.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="string-dp.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="matrix.h">

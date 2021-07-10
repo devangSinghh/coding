@@ -98,6 +98,13 @@ void printPair(vector<pair<int, int>>v) {
 		cout << pair.first << " " << pair.second << "\n";
 }
 
+void printMap(unordered_map<int, int>u) {
+	for (auto c : u)
+		cout << "key : " << c.first << " " << "value : " << c.second;
+}
+
+auto changesign = [](int n) { n = (~n + 1); };
+
 //get parity of number 
 // Parity of a number refers to whether it contains an odd or even number of 1-bits. 
 //The number has “odd parity”, if it contains odd number of 1-bits and is “even parity” if it contains even number of 1-bits. 
@@ -341,10 +348,6 @@ int countNumbersWithUniqueDigits(int n) {
 		available--;
 	}
 	return res;
-}
-
-void printMap(unordered_map<int, int>u) {
-	for (auto it = begin(u); it != end(u); it++) cout << it->first << " " << it->second << "\n";
 }
 
 void backTracking(vector<int>&res, vector<int>&temp, vector<int>&A, int target, int s) {
@@ -691,6 +694,150 @@ int minDeletionSize(vector<string>& v) {
 		for (i = 0; i < m - 1; i++)
 			if (!sorted[i] and v[i][j] < v[i + 1][j])
 				sorted[i] = true;
+	}
+	return res;
+}
+
+//to re arrange a sorted array into eg - 123456 = 615243 alternate max and min without using space
+//https://www.geeksforgeeks.org/rearrange-array-maximum-minimum-form-set-2-o1-extra-space/
+void rearrange(long long* arr, int n) {
+	int l = 0, r = n - 1;
+	int m = arr[n - 1] + 1;
+	for (int i = 0; i < n; i++) {
+		if (i % 2 == 0) {
+			arr[i] += (arr[r] % m) * m;//this statement stores the elements as multipliers and remainder
+			r--;
+		}
+		else {
+			arr[i] += (arr[l] % m) * m;
+			l++;
+		}
+	}
+	for (int i = 0; i < n; i++) arr[i] = arr[i] / m;
+}
+
+//merge 2 sorted array without extra space O((n+m)log(n+m))
+void merge(long long arr1[], long long arr2[], int n, int m) {
+	int i = 0, j = 0, k = n - 1;
+	while (i <= k && j < m) {
+		if (arr1[i] < arr2[j])
+			i++;
+		else {
+			swap(arr1[k--], arr2[j++]);
+		}
+	}
+	sort(arr1, arr1 + n);
+	sort(arr2, arr2 + m);
+}
+
+//
+auto max_element_less_than_k(vector<int>::reverse_iterator s, vector<int>::reverse_iterator e, int k) {
+	auto mx = prev(e);
+	for (auto it = s; it != e; it++)
+		if (*it > *mx and *it < k) mx = it;
+	return mx;
+}
+
+//used for counting also it is the number of distinct BST formed with n nodes
+int catalan_number(int n) {
+	vector<int> dp(n + 1, 0);
+	dp[0] = 1, dp[1] = 1;
+	for (int i = 2; i <= n; i++)
+		for (int j = 0; j < i; j++)
+			dp[i] += dp[j] * dp[i - j - 1];
+	return dp[n];
+}
+
+vector<int> spirallyTraverse(vector<vector<int> > matrix, int r, int c) {
+	vector<int> res;
+	int l = 0, k = 0;
+	while (l < r and k < c) {
+		for (int i = l; i < c; ++i) {
+			res.push_back(matrix[k][i]);
+		}
+		k++;
+		for (int i = k; i < r; ++i) {
+			res.push_back(matrix[i][c - 1]);
+		}
+		c--;
+		if (k < r) {
+			for (int i = c - 1; i >= l; --i) {
+				res.push_back(matrix[r - 1][i]);
+			}
+			r--;
+		}
+		if (l < c) {
+			for (int i = r - 1; i >= k; --i) {
+				res.push_back(matrix[i][l]);
+			}
+			l++;
+		}
+	}
+	return res;
+}
+
+
+int longestConsecutive(vector<int>& num) {
+	unordered_map<int, int> m;
+	int r = 0;
+	for (int i : num) {
+		if (m[i]) continue;
+		r = max(r, m[i] = m[i + m[i + 1]] = m[i - m[i - 1]] = m[i + 1] + m[i - 1] + 1);
+	}
+	return r;
+}
+
+
+string multiple(int n) {
+	if (n == 1) return "1";
+	vector<int>p(n, -1);
+	vector<int>state(n, -1);
+	queue<int>q;
+	int steps[2] = { 0, 1 };
+	q.push(1);
+	while (!q.empty()) {
+		int u = q.front();
+		q.pop();
+		if (u == 0) break;
+		for (auto step : steps) {
+			int curr = (u * 10 + step) % n; //this becomes new state
+			if (p[curr] == -1) {
+				p[curr] = u;
+				state[curr] = step;
+				q.push(curr);
+			}
+		}
+	}
+	print(state);
+	string s = "";
+	//for (auto c : state)
+	//	s += to_string(c);
+	return s;
+}
+
+//you're given N <= 1e7 numbers, each between 0 and 1e9, how many differnet values will appear in the sequence ? 
+int countDifferentValues(vector<int>nums) {
+	int n = nums.size();
+	bitset<1000000001>visited;
+	for(int i = 0; i< n; i++) {
+		visited[nums[i]] = true;
+	}
+	return visited.count();
+}
+
+
+//maximum sum of elements in two non-overlapping (contiguous) subarrays, which have lengths L and M
+//L-length subarray could occur before or after the M-length subarray.
+int maxSumTwoNoOverlap(vector<int>& arr, int L, int M) {
+	int n = arr.size();
+	vector<int>pre(n);
+	partial_sum(begin(arr), end(arr), begin(pre));
+	int res = pre[L + M - 1], Lmax = pre[L - 1], Mmax = pre[M - 1];
+
+	for (int i = L + M; i < n; i++) {
+		Lmax = max(Lmax, pre[i - M] - pre[i - L - M]);
+		Mmax = max(Mmax, pre[i - L] - pre[i - L - M]);
+		res = max(res, max(Lmax + pre[i] - pre[i - M], Mmax + pre[i] - pre[i - L]));
 	}
 	return res;
 }
