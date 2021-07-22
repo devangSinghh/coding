@@ -8,6 +8,31 @@ public:
 	TreeNode(int x, TreeNode* left, TreeNode* right);
 };
 
+//class BSTIterator {
+//private:
+//	stack<TreeNode*>stk;
+//public:
+//	BSTIterator(TreeNode* root) {
+//		while (root) {
+//			stk.push(root);
+//			root = root->left;
+//		}
+//	}
+//	bool hasNext() {
+//		return !stk.empty();
+//	}
+//	bool next() {
+//		TreeNode* t = stk.top();
+//		stk.pop();
+//		int res = t->val;
+//		t = t->right;
+//		while (t) {
+//			stk.push(t);
+//			t = t->left;
+//		}
+//		return res;
+//	}
+//};
 //class RangeModule {
 //public:
 //    map<int, int>m;

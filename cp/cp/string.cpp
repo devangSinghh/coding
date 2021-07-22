@@ -1065,3 +1065,57 @@ int minCut(string s) {
 	}
 	return cuts[0];
 }
+
+void stringEquality() {
+	int T;
+	cin >> T;
+	while (T--) {
+		int n, k; string a, b;
+		cin >> n >> k >> a >> b;
+		int have[26] = {}, need[26] = {};
+		for (auto c : a) ++have[c - 'a'];
+		for (auto c : b) ++need[c - 'a'];
+		bool bad = false;
+		for (int i = 0; i < 26; i++) {
+			if (have[i] < need[i] or (have[i] -= need[i]) % k)
+				bad = true;
+			have[i + 1] += have[i];
+		}
+		for (auto c : have) cout << c << " ";
+
+		cout << (bad ? "No" : "Yes") << '\n';
+	}
+}
+
+
+//maximum number of non overlapping strings
+vector<string> maxNumOfSubstrings(string s) {
+	int n = s.size(), fst[26] = {}, last[26] = {};
+	for (int i = 0; i < n; i++) last[s[i] - 'a'] = i;
+	for (int i = n - 1; i >= 0; i--) fst[s[i] - 'a'] = i;
+
+	vector<pair<int, int>>t;
+	for (int i = 0; i < 26; i++) {
+		if (fst[i] < n) {
+			int b = fst[i], e = last[i];
+			for (int j = b; j <= e; j++) {
+				b = min(b, fst[s[j] - 'a']);
+				e = max(e, last[s[j] - 'a']);
+			}
+			if (b == fst[i])
+				t.push_back({ e, b });
+		}
+	}
+
+	sort(begin(t), end(t));
+	vector<string>ans;
+	int prev = -1;
+	for (auto& p : t) {
+		int e = p.first, b = p.second;
+		if (b > prev) {
+			ans.push_back(s.substr(b, e - b + 1));
+			prev = e;
+		}
+	}
+	return ans;
+}

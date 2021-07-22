@@ -359,3 +359,54 @@ int waysToSplit(vector<int>& nums) {
 	}
 	return ans;
 }
+
+
+int kth_matrix_bound(vector<vector<int>>mat, int k) {
+	int m = mat.size(), n = mat.size();
+	int l = mat[0][0], r = mat[m - 1][n - 1];
+	while (l < r) {
+		int m = l + (r - l) / 2, j = n - 1, cnt = 0;
+
+		for (int i = 0; i < m; i++) {
+			while (j >= 0 and mat[i][j] > m)
+				j--;
+			cnt += (j + 1);
+		}
+		if (cnt < k)
+			l = m + 1;
+		else
+			r = m;
+	}
+	return l;
+}
+
+vector<int> kthSmallestPrimeFraction(vector<int>& arr, int k) {
+	int n = arr.size();
+	double l = 0.0, r = 1.0;
+
+	while (l < r) {
+		double m = (l + r) / 2;
+		double max_f = 0.0;
+		int total = 0, p = 0, q = 0, j = 1;
+		for (int i = 0; i < n - 1; i++) {
+			while (j < n and arr[i] > m * arr[j])
+				j++;
+			total += (n - j);
+			if (j == n)
+				break;
+
+			double f = static_cast<double>(arr[i]) / arr[j];
+			if (f > max_f) {
+				p = i, q = j, max_f = f;
+			}
+		}
+
+		if (total == k)
+			return { arr[p], arr[q] };
+		else if (total < k)
+			l = m;
+		else
+			r = m;
+	}
+	return {};
+}

@@ -121,12 +121,12 @@ int findOddOccuringNumber(vector<int>v) {
 	return res;
 }
 
-int dp_pascal[2001][2001] = {};
-long long comb(int n, int m) {
-	return n == 0 or m == 0 ? 1 :
-		dp_pascal[n][m] ? dp_pascal[n][m] : 
-			dp_pascal[n][m] = (comb(n - 1, m) + comb(n, m - 1)) % 1000000007;
-}
+//int dp_pascal[2001][2001] = {};
+//long long comb(int n, int m) {
+//	return n == 0 or m == 0 ? 1 :
+//		dp_pascal[n][m] ? dp_pascal[n][m] : 
+//			dp_pascal[n][m] = (comb(n - 1, m) + comb(n, m - 1)) % 1000000007;
+//}
 
 //given day, month, year find weekday 
 int sakamoto(int y, int month, int day) {
@@ -869,4 +869,47 @@ int minimumXORSum(vector<int>& nums1, vector<int>& nums2) {
 		return dp[c] = ans;
 	};
 	return dfs(0, c);
+}
+
+//longest subarray without atmost 1 deletion
+void longestSubarrayWithAtmost1Deletion() {
+	int n, a, ans = 1;
+	cin >> n;
+	vector<int> v(n), rg(n, 1), lf(n, 1);
+	for (int i = 0; i < n; i++)
+		cin >> v[i];
+
+	for (int i = n - 2; i >= 0; i--) {
+		if (v[i + 1] > v[i])
+			rg[i] = rg[i + 1] + 1;
+		ans = max(ans, rg[i]);
+	}
+
+	for (int i = 1; i < n; i++) {
+		if (v[i - 1] < v[i])
+			lf[i] = lf[i - 1] + 1;
+		ans = max(ans, lf[i]);
+	}
+	for (int i = 0; i < n - 2; i++) {
+		if (v[i] < v[i + 2])
+			ans = max(ans, lf[i] + rg[i + 2]);
+	}
+	cout << ans << endl;
+}
+
+
+//largest area of histogram
+int largestRectangleArea(vector<int>& A) {
+	A.push_back(0);
+	int n = A.size(), area = 0;
+	stack<int>stk;
+	for (int i = 0; i < n; i++) {
+		while (!stk.empty() and A[stk.top()] >= A[i]) {
+			int height = A[stk.top()]; stk.pop();
+			int pos = stk.empty() ? -1 : stk.top();
+			area = max(area, height * (i - pos - 1));
+		}
+		stk.push(i);
+	}
+	return area;
 }

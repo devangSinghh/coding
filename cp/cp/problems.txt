@@ -50,6 +50,12 @@ https://leetcode.com/problems/verbal-arithmetic-puzzle
 
 
 dicsuss
+https://leetcode.com/problems/critical-connections-in-a-network/discuss/1293400/Articulation-points-and-DFN-numbering-or-C%2B%2B-easy-understanding-solution
+https://leetcode.com/problems/integer-replacement/discuss/1341564/C%2B%2B-easy-dp-solution
+https://leetcode.com/problems/cells-with-odd-values-in-a-matrix/discuss/1337137/C%2B%2B-4-lines
+https://leetcode.com/problems/string-without-aaa-or-bbb/discuss/1334713/C%2B%2B-Greedy-fill
+https://leetcode.com/problems/best-position-for-a-service-centre/discuss/1334685/C%2B%2B-geometric-median
+https://leetcode.com/problems/path-with-maximum-probability/discuss/1334585/C%2B%2B-bfs
 https://leetcode.com/problems/validate-ip-address/discuss/1320996/C%2B%2B-make-2-cases-short-implementation
 https://leetcode.com/problems/shortest-palindrome/discuss/1320851/C%2B%2B-short-Kmp
 https://leetcode.com/problems/minimum-adjacent-swaps-to-reach-the-kth-smallest-number/discuss/1318393/C%2B%2B-very-easy-with-explanations

@@ -140,3 +140,272 @@ vector<TreeNode*> allPossibleFBT(int n) {
     cache[n] = res;
     return res;
 }
+
+// Construct Binary Tree from Preorder and Postorder Traversal
+int preIndex = 0, postIndex = 0;
+TreeNode* constructFromPrePost(vector<int>& pre, vector<int>& post) {
+    TreeNode* root = new TreeNode(pre[preIndex++]);
+    if (root->val != post[postIndex])
+        root->left = constructFromPrePost(pre, post);
+    if (root->val != post[postIndex])
+        root->right = constructFromPrePost(pre, post);
+    postIndex++;
+    return root;
+}
+
+//Morris traversal time => O(n), space => O(1)
+vector<int>recoverTree(TreeNode* root) {
+    TreeNode* temp = NULL, * pre = NULL, * first = NULL, * second = NULL;
+    while (root) {
+        if (root->left) {
+            temp = root->left;
+            while (temp->right and temp->right != root)
+                temp = temp->right;
+            if (temp->right) {
+                if (pre and pre->val > root->val) {
+                    if (first == NULL) first = pre;
+                    second = root;
+                }
+                pre = root;
+                temp->right = NULL;
+                root = root->right;
+            }
+            else {
+                temp->right = root;
+                root = root->left;
+            }
+        }
+        else {
+            if (pre and pre->val > root->val) {
+                if (first == NULL) first = pre;
+                second = root;
+            }
+            pre = root;
+            root = root->right;
+        }
+    }
+
+    if (first and second) {
+        swap(first->val, second->val);
+    }
+
+    vector<int>res;
+    res.push_back(first->val);
+    res.push_back(second->val);
+    return res;
+}
+
+
+//construct binary tree from inorder and preorder traversal
+TreeNode* construct_tree(vector<int>& pre, vector<int>& io, int ps, int s, int e) {
+    if (s > e) return NULL;
+    TreeNode* root = new TreeNode(pre[ps]);
+    int i = find(begin(io) + s, begin(io) + e + 1, pre[ps]) - begin(io);
+    root->left = construct_tree(pre, io, ps + 1, s, i - 1);
+    root->right = construct_tree(pre, io, i + ps - s + 1, i + 1, e);
+    return root;
+}
+
+//flatten binary tree to linked list
+TreeNode* flatten(TreeNode* root) {
+    TreeNode* curr = root;
+    while (curr) {
+        if (curr->left) {
+            TreeNode* runner = curr->left;
+            while (runner->right)
+                runner = runner->right;
+            runner->right = curr->right;
+            curr->right = curr->left;
+            curr->left = NULL;
+        }
+        curr = curr->right;
+    }
+    return root;
+}
+
+//Iterative Inorder traversal
+vector<int>IterativeInorderTraversal(TreeNode* root) {
+    stack<TreeNode*>stk;
+    vector<int>tree;
+
+    while (!stk.empty() or root) {
+        TreeNode* node = root;
+        while (root) {
+            stk.push(root);
+            root = root->left;
+        }
+        root = stk.top();
+        stk.pop();
+        tree.push_back(root->val);
+        root = root->right;
+    }
+    return tree;
+}
+
+//Iterative preorder traversal
+vector<int>IterativePreorderTraversal(TreeNode* root) {
+    if (!root) return {};
+    stack<TreeNode*> stk;
+    vector<int>v;
+    stk.push(root);
+    while (!stk.empty()) {
+        TreeNode* node = stk.top();
+        stk.pop();
+        v.push_back(node->val);
+        if (node->right)
+            stk.push(node->right);
+        if (node->left)
+            stk.push(node->left);
+    }
+    return v;
+}
+
+//Iterative postorder traversal
+vector<int>IterativePostorderTraversal(TreeNode* root) {
+    stack<TreeNode*>stk;
+    vector<int>v;
+    TreeNode* pre = NULL;
+    if (!root) return {};
+    while (!stk.empty() or root) {
+        if (root) {
+            stk.push(root);
+            root = root->left;
+        }
+        else {
+            TreeNode* node = stk.top();
+            if (node->right and node->right != pre) {
+                root = node->right;
+            }
+            else {
+                v.push_back(node->val);
+                pre = node;
+                stk.pop();
+            }
+        }
+    }
+    return v;
+}
+
+//populate next right pointers
+//void connect(TreeLinkNode* root) {
+//    TreeLinkNode* prev = NULL, * left = NULL, * curr = root;
+//    while (curr) {
+//        while (curr) {
+//            if (curr->left) {
+//                if (prev)
+//                    prev->next = curr->left;
+//                else
+//                    left = curr->left;
+//                prev = curr->left;
+//            }
+//            if (curr->right) {
+//                if (prev)
+//                    prev->next = curr->right;
+//                else
+//                    left = curr->right;
+//                prev = curr->right;
+//            }
+//            curr = curr->next;
+//        }
+//        curr = left;
+//        prev = left = NULL;
+//    }
+//}
+
+//class Node {
+//public:
+//    int count;
+//    Node* ch[26];
+//    Node() {
+//        count = 0;
+//        memset(ch, NULL, sizeof ch);
+//    }
+//};
+//vector<string>prefix(vector<string>& A) {
+//
+//    auto insert = [](Node* trie, string s) {
+//        for (auto c : s) {
+//            if (trie->ch[c - 'a'] == NULL)
+//                trie->ch[c - 'a'] = new Node();
+//            trie = trie->ch[c - 'a'];
+//            (trie->count)++;
+//        }
+//    };
+//
+//    auto answer = [](Node* trie, string s) {
+//        for (int i = 0; i < s.size(); i++) {
+//            trie = trie->ch[s[i] - 'a'];
+//            if (trie->count == 1)
+//                return i;
+//        }
+//        return (int)s.size();
+//    };
+//
+//    Node* trie = new Node();
+//    for (auto s : A) insert(trie, s);
+//
+//    vector<string>ans;
+//    ans.clear();
+//
+//    for (string s : A) {
+//        int j = answer(trie, s);
+//        ans.push_back(s.substr(0, j + 1));
+//    }
+//    return ans;
+//}
+
+//2 sum binary tree
+int t2Sum(TreeNode* root, int k) {
+    stack<TreeNode*>l, r;
+
+    for (TreeNode* curr = root; curr; curr = curr->left)
+        l.push(curr);
+    for (TreeNode* curr = root; curr; curr = curr->right)
+        r.push(curr);
+
+    while (!l.empty() and !r.empty() and l.top() != r.top()) {
+        int sum = l.top()->val + r.top()->val;
+        if (sum == k) return 1;
+        else if (sum < k) {
+            TreeNode* p = l.top(); l.pop();
+            for (TreeNode* curr = p->right; curr; curr = curr->left)
+                l.push(curr);
+        }
+        else {
+            TreeNode* p = r.top(); r.pop();
+            for (TreeNode* curr = p->left; curr; curr = curr->right)
+                r.push(curr);
+        }
+    }
+    return 0;
+}
+
+vector<vector<int>>verticalOrderTraversal(TreeNode* root) {
+    vector<vector<int>>v;
+    if (root == NULL) return v;
+
+    map<int, vector<int>> hash;
+    queue<pair<TreeNode*, int>>q;
+    q.push(make_pair(root, 0));
+
+    while (!q.empty()) {
+        pair<TreeNode*, int>p = q.front();
+        q.pop();
+
+        TreeNode* temp = p.first;
+        int count = p.second;
+
+        hash[count].push_back(temp->val);
+
+        if (temp->left)
+            q.push(make_pair(temp->left, count - 1));
+        if (temp->right)
+            q.push(make_pair(temp->right, count + 1));
+        free(temp);
+    }
+
+    for (auto t : hash) {
+        v.push_back(t.second);
+    }
+    return v;
+}

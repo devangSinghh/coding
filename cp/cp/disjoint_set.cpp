@@ -47,3 +47,26 @@ void disjoint_set::joinByRank(int i, int j) {
 		rank[root_j]++; //increment the result of the parent tree
 	}
 }
+
+//https://leetcode.com/problems/minimize-hamming-distance-after-swap-operations/
+int minimumHammingDistance(vector<int>& source, vector<int>& target, vector<vector<int>>& swaps) {
+	int n = source.size(), diff = 0;
+	disjoint_set U(n);
+	for (auto s : swaps) {
+		U.join(s[0], s[1]);
+	}
+	unordered_map<int, unordered_map<int, int>>map;
+	for (int i = 0; i < n; i++) {
+		int pi = U.find(i);
+		map[pi][source[i]]++;
+	}
+	for (int i = 0; i < n; i++) {
+		int num = target[i];
+		int pi = U.find(i);
+		if (map[pi][num] <= 0)
+			diff++;
+		else
+			map[pi][num]--;
+	}
+	return diff;
+}

@@ -4,7 +4,7 @@
 #  define __builtin_popcount __popcnt
 #endif
 using namespace std;
-static const int mod = 1e9 + 7;
+const int mod = 1e9 + 7;
 /*
 Given an array nums of integers, return the length of the longest arithmetic subsequence in nums.
 subsequence of an array nums is a list nums[i1], nums[i2], ..., nums[ik] with 0 <= i1 < i2 < ... < ik <= nums.length - 1,
@@ -172,18 +172,17 @@ int knapsackBottomUp(vector<int>profit, vector<int>weights, int capacity) {
 }
 
 //since we only need (i - 1)th while computing therefore spce can be reduced
-int knapsackTopDown(vector<int>profit, vector<int>weights, int capacity) {
-	if (capacity <= 0 or profit.empty() or weights.size() != profit.size()) //sanity check
+int knapsackTopDown(vector<int>v, vector<int>w, int C) {
+	if (C <= 0 or v.empty() or w.empty() or v.size() != w.size())
 		return 0;
-	int n = profit.size();
-	vector<int>curr(capacity+1, 0);
-
+	int n = v.size();
+	vector<int>dp(C + 1, 0);
 	for (int i = 0; i < n; i++) {
-		for (int c = weights[i]; c <= capacity; c++) {
-			curr[c] = max(curr[c-1], profit[i] + curr[c - weights[i]]); //max of (discard the weight, put the weight)
+		for (int c = C; c >= w[i]; c--) {
+			dp[c] = max(dp[c], v[i] + dp[c - w[i]]);
 		}
 	}
-	return curr[capacity];
+	return dp[C];
 }
 
 int unboundedKnapsack(vector<int>profit, vector<int>weights, int capacity) {
@@ -277,7 +276,7 @@ bool partitionUsingBits(vector<int>A) {
 	bitset<10001>bits(1);
 	for (auto n : A) bits |= bits << n; //switch on the bit at position n
 	int sum = accumulate(begin(A), end(A), 0);
-	return !(sum % 2) and bits[sum >> 1];
+	return sum % 2 == 0 and bits[sum >> 1];
 }
 
 bool canPartition(vector<int>A) {
@@ -741,4 +740,111 @@ int mergeStones(vector<int>& A, int k) {
 		}
 	}
 	return dp[0][n - 1];
+}
+
+int stoneGame1(vector<int>nums) {
+	int n = nums.size();
+	vector<int>dp = nums;
+	for (int range = 1; range < n; range++) {
+		for (int i = 0; i < n - range; i++)
+			dp[i] = max(nums[i] - dp[i + 1], nums[i + range] - dp[i]);
+	}
+	return dp[0];
+}
+
+//flipping game
+void flipGame() {
+	int n, a, count1 = 0, zero = 0, mx = -1;
+	cin >> n;
+	while (n--) {
+		cin >> a;
+		if (a == 1) {
+			count1++;
+			if (zero > 0)
+				zero--;
+		}
+		else {
+			zero++;
+			mx = max(mx, zero);
+		}
+	}
+	cout << count1 + mx << "\n";
+}
+
+
+/*int T;
+	cin >> T;
+	while (T--) {
+		ll n, a, ans = 0, sum = 0, add = 0, ok = 0;
+		cin >> n;
+		vi v(n);
+		for (int i = 0; i < n; i++) {
+			cin >> v[i];
+			if (i % 2 == 0) {
+				sum += v[i];
+			}
+		}
+
+		for (int i = 1; i < n; i += 2) {
+			ok += v[i] - v[i - 1];
+			add = max(add, ok);
+			if (ok < 0) {
+				ok = 0;
+			}
+		}
+		ok = 0;
+		for (int i = 2; i < n; i += 2) {
+			ok += v[i - 1] - v[i];
+			add = max(add, ok);
+			if (ok < 0) {
+				ok = 0;
+			}
+		}
+
+		cout << sum + add << "\n";
+	}*/
+
+int maxProduct(const vector<int>& A) {
+	int n = A.size(), high = A[0], low = A[0], ans = A[0];
+
+	for (int i = 1; i < n; i++) {
+		if (A[i] < 0)
+			swap(high, low);
+		high = max(A[i], A[i] * high);
+		low = min(A[i], A[i] * low);
+		ans = max(ans, high);
+	}
+
+	return ans;
+}
+
+int minDifferenceSusbet(vector<int>& A) {
+	int n = A.size(), sum = 0;
+	for (auto n : A) sum += n;
+	vector<bool>dp(sum + 2);
+
+	for (int j = 0; j < n; j++) {
+		for (int i = sum; i > 0; i--) {
+			if (dp[i])
+				dp[i + A[j]] = true;
+		}
+		dp[A[j]] = true;
+	}
+
+	int k = INT_MAX;
+	for (int i = 1; i <= sum; i++) {
+		if (dp[i]) k = min(k, abs(sum - i - i));
+	}
+	return k;
+}
+
+//tiling with dominos
+int tilingWithDominos(int n) {
+	vector<long long>A(n + 1), B(n + 1);
+	A[0] = 1, B[1] = 1;
+	for (int i = 2; i <= n; i++) {
+		A[i] = (A[i-2] + 2*B[i-1]) % mod;
+		B[i] = (A[i-1] + B[i-2]) % mod;
+	}
+	return A[n];
 }

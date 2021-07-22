@@ -152,3 +152,38 @@ int decodeWays(string s) {
     }
     return dp[n];
 }
+
+int countPalindromicSubsequences(string s) {
+    int n = s.size();
+    const int mod = 1e9 + 7;
+    vector<vector<long long>>dp(n, vector<long long>(n));
+
+    for (int i = 0; i < n; i++)
+        dp[i][i] = 1;
+
+    for (int len = 1; len < n; ++len) {
+        for (int i = 0, j = i + len; j < n; ++i, ++j) {
+            if (s[i] != s[j]) {
+                dp[i][j] = dp[i + 1][j] + dp[i][j - 1] - dp[i + 1][j - 1];
+            }
+            else {
+                dp[i][j] = 2 * dp[i + 1][j - 1];
+                int l = i + 1, r = j - 1;
+
+                while (l <= r and s[l] != s[i]) l++;
+                while (l <= r and s[r] != s[i]) r--;
+
+                if (l < r)
+                    dp[i][j] -= dp[l + 1][r - 1];
+                if (l == r) {
+                    dp[i][j]++;
+                }
+                if (l > r)
+                    dp[i][j] += 2;
+            }
+
+            dp[i][j] = (dp[i][j] + mod) % mod;
+        }
+    }
+    return dp[0][n - 1];
+}
