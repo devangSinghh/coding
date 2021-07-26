@@ -32,13 +32,22 @@ Tree
 https://leetcode.com/problems/find-mode-in-binary-search-tree/discuss/98101/Proper-O(1)-space
 
 Graph
+https://www.interviewbit.com/problems/clone-graph/
 https://www.interviewbit.com/problems/commutable-islands/
+https://www.interviewbit.com/problems/smallest-multiple-with-0-and-1/
+https://www.interviewbit.com/problems/knight-on-chess-board/
 
 String
 https://leetcode.com/problems/rank-teams-by-votes/
 https://leetcode.com/problems/ones-and-zeroes/
 https://leetcode.com/problems/iterator-for-combination/
 https://leetcode.com/problems/minimum-remove-to-make-valid-parentheses/
+
+Bit manipulation
+https://www.geeksforgeeks.org/find-two-non-repeating-elements-in-an-array-of-repeating-elements/
+https://www.interviewbit.com/problems/count-total-set-bits/
+https://www.interviewbit.com/problems/divide-integers/
+https://www.interviewbit.com/problems/palindromic-binary-representation/
 
 Binary Search
 https://leetcode.com/problems/koko-eating-bananas/
@@ -47,7 +56,8 @@ https://practice.geeksforgeeks.org/problems/trapping-rain-water-1587115621/1
 BackTracking
 https://leetcode.com/problems/verbal-arithmetic-puzzle
 
-
+Stacks
+https://practice.geeksforgeeks.org/problems/longest-valid-parentheses5657/1#
 
 dicsuss
 https://leetcode.com/problems/critical-connections-in-a-network/discuss/1293400/Articulation-points-and-DFN-numbering-or-C%2B%2B-easy-understanding-solution

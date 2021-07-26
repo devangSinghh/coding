@@ -342,3 +342,27 @@ int minimumIncompatibility(vector<int>nums, int k) {
 	}
 	return dp.back() >= INF ? -1 : dp.back();
 }
+
+//N Queens
+// n columns have (2*n - 1) 45 deg and 135 deg diagonals
+vector<vector<string>> solveNQueens(int n) {
+	vector<vector<string>>res;
+	vector<string>board(n, string(n, '.'));
+	vector<bool>col(n), diag1(2 * n - 1), diag2(2 * n - 1);
+
+	static function<void(int)> dfs = [&](int i) {
+		if (i == board.size())
+			res.push_back(board);
+		for (int j = 0; j < n; j++) {
+			if (!col[j] and !diag1[i - j + n - 1] and !diag2[i + j]) {
+				board[i][j] = 'Q';
+				col[j] = diag1[i - j + n - 1] = diag2[i + j] = true;
+				dfs(i + 1);
+				board[i][j] = '.';
+				col[j] = diag1[i - j + n - 1] = diag2[i + j] = false;
+			}
+		}
+	};
+	dfs(0);
+	return res;
+}

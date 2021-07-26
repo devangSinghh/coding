@@ -126,6 +126,7 @@
     <ClCompile Include="array.cpp" />
     <ClCompile Include="backtracking.cpp" />
     <ClCompile Include="bfs.cpp" />
+    <ClCompile Include="bitManipulation.cpp" />
     <ClCompile Include="bsearch.cpp" />
     <ClCompile Include="cf-contests.cpp" />
     <ClCompile Include="dfs.cpp" />

@@ -337,3 +337,32 @@ int shortestPathLength(vector<vector<int>>& graph) {
 	}
 	return 0;
 }
+
+//find cycle in directed graph
+int findCycleInDirectedgraph(int n, vector<vector<int> >& B) {
+	vector<vector<int>>g(n + 1);
+	vector<int>color(n + 1);
+
+	for (auto p : B)
+		g[p[0]].push_back(p[1]);
+
+	function<bool(int)> dfs = [&](int v) {
+		if (color[v] == 1) return true;
+		if (color[v] == 2) return false;
+		color[v] = 1;
+
+		for (auto w : g[v]) {
+			if (dfs(w)) return true;
+		}
+
+		color[v] = 2;
+		return false;
+	};
+
+	for (int i = 1; i <= n; i++) {
+		if (color[i] == 0) {
+			if (dfs(i)) return 1;
+		}
+	}
+	return 0;
+}

@@ -65,3 +65,30 @@ void mergeSortLists(ListNode*& A) {
     mergeSortLists(mid);
     A = merge2Lists(A, mid);
 }
+
+//remove loop from linked list
+void removeLoop(ListNode* head) {
+    ListNode* a = head, * b = head;
+    while (b->next and b->next->next) {
+        a = a->next;
+        b = b->next->next;
+        if (a == b) {
+
+            //cycle found
+            ListNode* u = a, * v = a;
+            unsigned int k = 1, i;
+            while (u->next != v) u = u->next, k++;
+            u = head, v = head;
+            for (i = 0; i < k; i++)
+                v = v->next;
+            while (u != v) {
+                u = u->next;
+                v = v->next;
+            }
+            while (v->next != u)
+                v = v->next;
+            v->next = NULL;
+            return;
+        }
+    }
+}

@@ -409,3 +409,41 @@ vector<vector<int>>verticalOrderTraversal(TreeNode* root) {
     }
     return v;
 }
+
+TreeNode* convertExpression(string s, int i) {
+    stack<TreeNode*>stk;
+    TreeNode* curr = new TreeNode(s[0]);
+    TreeNode* root = curr;
+    for (int j = 1; j < s.size(); j += 2) {
+        if (s[j] == '?') {
+            stk.push(curr);
+            TreeNode* node = new TreeNode(s[j + 1]);
+            curr->left = node;
+            curr = node;
+        }
+        else if (s[j] == ':') {
+            curr = stk.top();
+            stk.pop();
+            TreeNode* node = new TreeNode(s[j + 1]);
+            curr->right = node;
+            curr = node;
+        }
+    }
+    return root;
+}
+
+void convert(TreeNode* root, TreeNode** head) {
+    if (!root) return;
+    static TreeNode* prev = NULL;
+    convert(root->left, head);
+    if (*head == NULL) {
+        prev = NULL;
+        *head = root;
+    }
+    else {
+        root->left = prev;
+        prev->right = root;
+    }
+    prev = root;
+    convert(root->right, head);
+}

@@ -1119,3 +1119,26 @@ vector<string> maxNumOfSubstrings(string s) {
 	}
 	return ans;
 }
+
+//https://www.interviewbit.com/problems/sorted-permutation-rank/
+//find rank of string in permutation
+int findRank(string s) {
+	const int mod = 1000003;
+	int ft[3001] = { 1 };
+	for (int i = 1; i <= 3000; i++) {
+		ft[i] = i * ft[i - 1] % mod;
+	}
+
+	unsigned long rank = 1;
+	int n = s.size();
+
+	for (int i = 0; i < n; i++) {
+		int count = 0;
+		for (int j = i + 1; j <= n; j++) {
+			if (s[i] > s[j])
+				count++;
+		}
+		rank = (rank + (count - 1) * ft[n - i - 1]) % mod;
+	}
+	return rank;
+}
