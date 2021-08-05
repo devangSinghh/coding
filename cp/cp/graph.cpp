@@ -346,7 +346,7 @@ bool dfsforcycle(vector<int> adj[],vector<bool> &vis,vector<bool> path,int curr,
         path[curr]=true;
         for(int i=0;i<adj[curr].size();i++){
             if(adj[curr][i]==parent)continue;
-            if(dfs(adj,vis,path,adj[curr][i],curr))return true;
+            if(dfsforcycle(adj,vis,path,adj[curr][i],curr))return true;
         }
         return false;
     }
@@ -354,7 +354,7 @@ bool isCycle(int v, vector<int>adj[]){
 	vector<bool> path(v,false);
 	vector<bool> vis(v,false);
 	for(int i=0;i<v;i++){
-	     if(!vis[i])if(dfs(adj,vis,path,i,-1))return true;
+	     if(!vis[i])if(dfsforcycle(adj,vis,path,i,-1))return true;
 	}
 	return false;
 }
