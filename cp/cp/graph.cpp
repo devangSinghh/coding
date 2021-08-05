@@ -338,6 +338,30 @@ int shortestPathLength(vector<vector<int>>& graph) {
 	return 0;
 }
 
+//find cycle in undirected graph
+bool dfsforcycle(vector<int> adj[],vector<bool> &vis,vector<bool> path,int curr,int parent){
+        if(path[curr]==true)return true;
+        if(vis[curr]==true)return false;
+        vis[curr]=true;
+        path[curr]=true;
+        for(int i=0;i<adj[curr].size();i++){
+            if(adj[curr][i]==parent)continue;
+            if(dfs(adj,vis,path,adj[curr][i],curr))return true;
+        }
+        return false;
+    }
+bool isCycle(int v, vector<int>adj[]){
+	vector<bool> path(v,false);
+	vector<bool> vis(v,false);
+	for(int i=0;i<v;i++){
+	     if(!vis[i])if(dfs(adj,vis,path,i,-1))return true;
+	}
+	return false;
+}
+
+
+
+
 //find cycle in directed graph
 int findCycleInDirectedgraph(int n, vector<vector<int> >& B) {
 	vector<vector<int>>g(n + 1);
