@@ -380,6 +380,54 @@ bool detectCycleUnionFInd(int n, vector<vector<int>>& B) {
 	return 0;
 }
 
+// https://practice.geeksforgeeks.org/problems/minimum-swaps/1/?category[]=Graph&category[]=Graph&difficulty[]=1&page=1&query=category[]Graphdifficulty[]1page1category[]Graph
+int minSwaps(vector<int>&nums)//minimum swaps to sort an array
+	{
+	    vector<bool> vis(nums.size(),false);//to check the visited elements
+	    vector<pair<int,int>> arr(nums.size());//store in pair with first element as the element in the nums array and second as the index of the element
+	    for(int i=0;i<nums.size();i++){
+	        arr[i].first=nums[i];
+	        arr[i].second=i;
+	    }
+	    int res=0;
+	    sort(arr.begin(),arr.end());//sort the pair vector according to the first element in each pair
+	    for(int i=0;i<nums.size();i++){//now traverse the pair vector to count the swaps
+	        if(vis[i] || arr[i].second==i)continue;//if the element is vivited or was in the right position
+	        int j=i;
+	        int count=0;//to store the number of nodes in a particular cycle
+	        while(!vis[j]){
+	            vis[j]=true;
+	            j=arr[j].second;//storing the original index of the current element
+	            count++;
+	        }
+	        if(count>0)res+=count-1;//if there are 3 nodes then we need 2 swaps and if there are 2 nodes then 1 swap is sufficent
+	    }
+	    return res;
+	}
+
+//find cycle in undirected graph
+bool dfsforcycle(vector<int> adj[],vector<bool> &vis,vector<bool> path,int curr,int parent){
+        if(path[curr]==true)return true;
+        if(vis[curr]==true)return false;
+        vis[curr]=true;
+        path[curr]=true;
+        for(int i=0;i<adj[curr].size();i++){
+            if(adj[curr][i]==parent)continue;
+            if(dfsforcycle(adj,vis,path,adj[curr][i],curr))return true;
+        }
+        return false;
+    }
+bool isCycle(int v, vector<int>adj[]){
+	vector<bool> path(v,false);
+	vector<bool> vis(v,false);
+	for(int i=0;i<v;i++){
+	     if(!vis[i])if(dfsforcycle(adj,vis,path,i,-1))return true;
+	}
+	return false;
+}
+
+
+
 
 //find cycle in directed graph
 int findCycleInDirectedgraph(int n, vector<vector<int> >& B) {
