@@ -366,3 +366,25 @@ vector<vector<string>> solveNQueens(int n) {
 	dfs(0);
 	return res;
 }
+
+//increasing subsequences in an array
+vector<vector<int>> findSubsequences(vector<int>& nums) {
+	int n = nums.size();
+	vector<vector<int>>res;
+	vector<int>t;
+	function<void(int, vector<int>&)> dfs = [&](int idx, vector<int>& t) {
+		if (t.size() > 1) res.push_back(t);
+		unordered_set<int>S;
+		for (int i = idx; i < n; i++) {
+			if (S.count(nums[i])) continue;
+			if (t.empty() or t.back() <= nums[i]) {
+				S.insert(nums[i]);
+				t.push_back(nums[i]);
+				dfs(i + 1, t);
+				t.pop_back();
+			}
+		}
+	};
+	dfs(0, t);
+	return res;
+}

@@ -447,3 +447,37 @@ void convert(TreeNode* root, TreeNode** head) {
     prev = root;
     convert(root->right, head);
 }
+
+//top view of a binary tree
+vector<int> topView(TreeNode* root) {
+    queue<pair<TreeNode*, int>>q;
+    map<int, int>u;
+    q.push(make_pair(root, 0));
+    vector<int>res;
+    while (!q.empty()) {
+        int n = q.size();
+        vector<int>v;
+        while (n--) {
+            auto p = q.front(); q.pop();
+            if (u.find(p.second) == u.end()) {
+                u[p.second] = p.first->val;
+            }
+            if (p.first->left) q.push({ p.first->left, p.second - 1 });
+            if (p.first->right)q.push({ p.first->right, p.second + 1 });
+        }
+    }
+    for (auto t : u)
+        res.push_back(t.second);
+    return res;
+}
+
+//unique BST's
+int numTrees(int N) {
+    const int mod = 1e9 + 7;
+    vector<long>dp(N + 1);
+    dp[0] = 1, dp[1] = 1;
+    for (int i = 2; i <= N; i++)
+        for (int j = 1; j <= i; j++)
+            dp[i] = (dp[i] + dp[j - 1] * dp[i - j]) % mod;
+    return (int)dp[N];
+}

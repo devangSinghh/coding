@@ -12,6 +12,7 @@ Array
 https://leetcode.com/problems/first-missing-positive/
 https://leetcode.com/problems/max-consecutive-ones-iii/
 https://practice.geeksforgeeks.org/problems/skip-the-work5752/1
+https://practice.geeksforgeeks.org/problems/surpasser-count0615/1
 
 Greedy
 https://leetcode.com/problems/broken-calculator/
@@ -27,9 +28,13 @@ https://leetcode.com/problems/cheapest-flights-within-k-stops/
 https://leetcode.com/problems/interleaving-string/
 https://leetcode.com/problems/stone-game/
 https://leetcode.com/problems/minimum-jumps-to-reach-home/
+https://practice.geeksforgeeks.org/problems/number-of-subsequences-in-a-string-divisible-by-n5947/1/
 
 Tree
 https://leetcode.com/problems/find-mode-in-binary-search-tree/discuss/98101/Proper-O(1)-space
+
+hashing
+https://practice.geeksforgeeks.org/problems/array-pair-sum-divisibility-problem3257/1#
 
 Graph
 https://www.interviewbit.com/problems/clone-graph/
@@ -42,12 +47,17 @@ https://leetcode.com/problems/rank-teams-by-votes/
 https://leetcode.com/problems/ones-and-zeroes/
 https://leetcode.com/problems/iterator-for-combination/
 https://leetcode.com/problems/minimum-remove-to-make-valid-parentheses/
+https://practice.geeksforgeeks.org/problems/minimal-moves-to-form-a-string4331/1/
 
 Bit manipulation
 https://www.geeksforgeeks.org/find-two-non-repeating-elements-in-an-array-of-repeating-elements/
 https://www.interviewbit.com/problems/count-total-set-bits/
 https://www.interviewbit.com/problems/divide-integers/
 https://www.interviewbit.com/problems/palindromic-binary-representation/
+https://practice.geeksforgeeks.org/problems/element-left-after-performing-alternate-or-xor-operation5106/1/
+https://practice.geeksforgeeks.org/problems/11e021cba210768fe464423e954b3eaf7f2a7c93/1/
+https://practice.geeksforgeeks.org/problems/cutting-binary-string1342/1
+https://practice.geeksforgeeks.org/problems/longest-substring-whose-character-rearranged-can-form-a-palindrome/1/
 
 Binary Search
 https://leetcode.com/problems/koko-eating-bananas/
@@ -55,6 +65,7 @@ https://practice.geeksforgeeks.org/problems/trapping-rain-water-1587115621/1
 
 BackTracking
 https://leetcode.com/problems/verbal-arithmetic-puzzle
+https://practice.geeksforgeeks.org/problems/mobile-numeric-keypad5456/1/
 
 Stacks
 https://practice.geeksforgeeks.org/problems/longest-valid-parentheses5657/1#

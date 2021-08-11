@@ -28,42 +28,32 @@ struct ListNode {
 //	return a;
 //}
 
-ListNode* merge2Lists(ListNode* A, ListNode* B) {
-    ListNode* a = A, * b = B, * merged = NULL, * tail = NULL;
+ListNode* merge(ListNode* a, ListNode* b) {
+    ListNode* merged = NULL, * tail = NULL;
     while (a and b) {
-        ListNode* inserted = NULL;
-        if (a->val < b->val) {
-            inserted = a;
-            a = a->next;
-        }
-        else {
-            inserted = b;
-            b = b->next;
-        }
-
-        if (merged) {
-            tail->next = inserted;
-            tail = inserted;
-        }
-        else merged = tail = inserted;
+        ListNode* c = NULL;
+        if (a->val < b->val)
+            c = a, a = a->next;
+        else c = b, b = b->next;
+        if (merged)
+            tail->next = c, tail = c;
+        else merged = tail = c;
     }
-
     while (a) tail->next = a, tail = a, a = a->next;
     while (b) tail->next = b, tail = b, b = b->next;
     if (tail) tail->next = NULL;
     return merged;
 }
-
-void mergeSortLists(ListNode*& A) {
-    if (!A or !A->next)
-        return;
-    ListNode* mid = A, * fast = A, * prev = NULL;
-    while (fast and fast->next)
-        prev = mid, mid = mid->next, fast = fast->next->next;
+ListNode* mergeSort(ListNode* head) {
+    if (!head or !head->next) return head;
+    ListNode* prev = NULL, * mid = head, * fast = head;
+    while (fast and fast->next) {
+        prev = mid, mid = mid->next;
+        fast = fast->next->next;
+    }
     if (prev) prev->next = NULL;
-    mergeSortLists(A);
-    mergeSortLists(mid);
-    A = merge2Lists(A, mid);
+    head = merge(mergeSort(head), mergeSort(mid));
+    return head;
 }
 
 //remove loop from linked list
@@ -91,4 +81,77 @@ void removeLoop(ListNode* head) {
             return;
         }
     }
+}
+
+//delete every kth node from linked list
+ListNode* deleteK(ListNode* head, int k) {
+    if (!head) return NULL;
+    if (k == 1) return NULL;
+    int count = 0;
+    ListNode* prev = NULL, * curr = head;
+    while (curr) {
+        count++;
+        if (count == k) {
+            delete(prev->next);
+            prev->next = curr->next;
+            count = 0;
+        }
+        if (count != 0)
+            prev = curr;
+        curr = prev->next;
+    }
+    return head;
+}
+
+//merge 2 sorted lists in descending order
+ListNode* mergeResult(ListNode* a, ListNode* b) {
+    if (!a and !b) return NULL;
+    ListNode* res = NULL;
+    while (a and b) {
+        if (a->val <= b->val) {
+            ListNode* t = a->next;
+            a->next = res;
+            res = a;
+            a = t;
+        }
+        else {
+            ListNode* t = b->next;
+            b->next = res;
+            res = b;
+            b = t;
+        }
+    }
+    while (a) {
+        ListNode* t = a->next;
+        a->next = res;
+        res = a;
+        a = t;
+    }
+    while (b) {
+        ListNode* t = b->next;
+        b->next = res;
+        res = b;
+        b = t;
+    }
+    return res;
+}
+
+//intersection of 2 sorted lists
+ListNode* findIntersection(ListNode* head1, ListNode* head2) {
+    ListNode* a = head1, * b = head2;
+    ListNode* res = NULL, * tail = NULL;;
+    while (a and b) {
+        if (a->val == b->val) {
+            ListNode* t = new ListNode(a->val);
+            if (res) tail->next = t;
+            else res = t;
+            tail = t;
+            a = a->next;
+            b = b->next;
+        }
+        else if (a->val < b->val)
+            a = a->next;
+        else b = b->next;
+    }
+    return res;
 }

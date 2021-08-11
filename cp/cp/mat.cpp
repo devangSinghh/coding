@@ -99,7 +99,7 @@ int numSubmatrixSumTarget(vector<vector<int>> A, int target) {
 		for (int j = 1; j < n; j++)
 			A[i][j] += A[i][j - 1];
 
-	for (int i = 0; i < n; i++)
+	for (int i = 0; i < n; i++)	
 		for (int j = i; j < n; j++) {
 			u = { {0, 1} };
 			int curr = 0;

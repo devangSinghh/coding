@@ -56,40 +56,6 @@ ll gcd(ll a, ll b) { return b == 0 ? a : gcd(b, a % b); };
 int d2[8][2] = { {0, -1}, {-1, 0}, {0, 1}, {1, 0}, {1, 1}, {-1, 1}, {1, -1}, {-1, -1} };
 int dir[5] = { 0, -1, 0, 1, 0 };
 
-
-int modPow(int x, int n, int m) {
-    if (x == 0 and n == 0) return 0;
-    if (n == 0) return 1;
-    long long p = (modPow(x, n / 2, m) + m) % m;
-    p = (p * p) % m;
-    return n % 2 ? (p * x + m) % m : p;
-}
-
-ll p[100005];
-
-void pre_compute_product_of_divisors() {
-    p[0] = 0; p[1] = 1;
-    if (p[2] != 0) return;
-    for (ll i = 2; i < 100005; i += 1) {
-        if (p[i] == 0) {
-            p[i] = 2;
-            for (ll j = i + i; j < 100005; j += i) {
-                if (p[j] == 0) p[j] = 1;
-                ll tmp = j;
-                ll cnt = 0;
-                while (tmp % i == 0) {
-                    cnt += 1;
-                    tmp /= i;
-                }
-                p[j] *= (cnt + 1);
-            }
-        }
-    }
-    for (int i = 2; i < 100005; i += 1) {
-        p[i] = (modPow(i, p[i] / 2, mod) % mod * (p[i] & 1 ? (ll)sqrt(i) : 1) % mod) % mod;
-    }
-}
-
 unsigned int divisor_count(unsigned int n) {
     unsigned int total = 1;
     for (; (n & 1) == 0; n >>= 1)
@@ -107,37 +73,46 @@ unsigned int divisor_count(unsigned int n) {
     return total;
 }
 
-unsigned int divisor_product(unsigned int n) {
-    return static_cast<unsigned int>(modPow(n, divisor_count(n) / 2.0, mod));
+int GetCeilIndex(vector<int>arr, vector<int>& T, int l, int r, int key) {
+    while (r - l > 1) {
+        int m = l + (r - l) / 2;
+        if (arr[T[m]] >= key)
+            r = m;
+        else
+            l = m;
+    }
+    return r;
 }
 
-int peak(vector<int>A) {
-    int n = A.size();
-    int l = 0, r = n - 1, idx = 0;
-    while (l < r) {
-        int m = l + (r - l) / 2, curr = A[m], prev = -1, next = -1;
-        if (m > 0) prev = A[m - 1];
-        if (m < n - 1) next = A[m + 1];
-        if (curr > next and curr > prev) return m;
-        else if (curr < next) l = m + 1;
-        else r = m;
-    }
-    return 0;
-}
 
 int main() {
     
+    vector<int>arr = { 1,2,5,3,6,4,1 };
+    int n = arr.size();
+    vector<vector<int>>L(n);
 
-    string s = "23||34";
+    L[0].push_back(arr[0]);
 
-    for (int i = 0; i < s.size(); i++) {
-        int j = i;
-        if (isdigit(s[i])) {
-            while (isdigit(s[j])) j++;
+    for (int i = 1; i < n; i++) {
+        for (int j = 0; j < i; j++) {
+            if (arr[i] > arr[j] and (L[i].size() < L[j].size()))
+                L[i] = L[j];
         }
-
-        cout << s.substr(i, j - i) << endl;
-        i = j;
+        L[i].push_back(arr[i]);
     }
 
+    vector<int>lis;
+
+    int mx = 1;
+
+    for (auto p : L) {
+        if (p.size() > mx) {
+            lis = p;
+            mx = p.size();
+        }
+    }
+
+    for (auto n : lis)
+        cout << n << " ";
 }
+

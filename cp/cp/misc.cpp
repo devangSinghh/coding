@@ -34,3 +34,14 @@ int findMaximumXOR(vector<int>nums) {
 	}
 	return mx;
 }
+
+//euler toteint function
+//1 1 2 2 4 2 6 4 ... 
+long long int phi(int n) {
+	long long int count = 1;
+	for (int i = 2; i < n; i++) {
+		if (gcd(i, n) == 1)
+			count++;
+	}
+	return count;
+}

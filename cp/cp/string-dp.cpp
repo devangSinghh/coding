@@ -228,3 +228,54 @@ int editDistanceOptimised(string s, string t) {
     }
     return pre[n];
 }
+
+//count all palindromic subsequences
+long long int dpcps[1001][1001];
+long long int cps(string& s, int i, int j) {
+    if (i > j) return 0;
+    if (dpcps[i][j] != -1)
+        return dpcps[i][j];
+    if (i == j)
+        return dpcps[i][j] = 1;
+    else if (s[i] == s[j])
+        return dpcps[i][j] = (cps(s, i + 1, j) + cps(s, i, j - 1) + 1) % mod;
+    else
+        return dpcps[i][j] = ((cps(s, i + 1, j) + cps(s, i, j - 1)) % mod - cps(s, i + 1, j - 1) % mod + mod) % mod;
+}
+
+//matrix chain multiplication parenthesis generation
+string matrixChainOrder(int arr[], int n) {
+    vector<vector<int>>dp(n, vector<int>(n));
+    vector<vector<int>>bracket(n, vector<int>(n));
+
+    for (int i = 0; i < n; i++)
+        dp[i][i] = 0;
+
+    for (int L = 2; L < n; L++) {
+        for (int i = 0; i < n - L + 1; i++) {
+            int j = i + L - 1;
+            dp[i][j] = INT_MAX;
+            for (int k = i; k < j; k++) {
+                int a = dp[i][k] + dp[k + 1][j] + arr[i - 1] * arr[k] * arr[j];
+                if (dp[i][j] > a) {
+                    dp[i][j] = a;
+                    bracket[i][j] = k;
+                }
+            }
+        }
+    }
+    string s;
+    char c = 'A';
+    function<void(int, int)> generate = [&](int i, int j) {
+        if (i == j) {
+            s += string(1, c++);
+            return;
+        }
+        s += "(";
+        generate(i, bracket[i][j]);
+        generate(bracket[i][j] + 1, j);
+        s += ")";
+    };
+    generate(1, n - 1);
+    return s;
+}

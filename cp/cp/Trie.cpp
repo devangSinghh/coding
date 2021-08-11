@@ -86,3 +86,48 @@ void findWordStrength() {
     for (auto n : v)
         cout << n << " ";
 }
+
+//maximum XOR subarray
+//class Node {
+//public:
+//    Node* ch[2];
+//    int val;
+//    Node() {
+//        memset(ch, NULL, sizeof ch);
+//        val = 0;
+//    }
+//};
+//
+//void insert(Node* t, int a) {
+//    Node* T = t;
+//    for (int i = 31; i >= 0; i--) {
+//        bool val = a & (1 << i);
+//        if (T->ch[val] == NULL)
+//            T->ch[val] = new Node();
+//        T = T->ch[val];
+//    }
+//    T->val = a;
+//}
+//
+//int query(Node* t, int a) {
+//    Node* T = t;
+//    for (int i = 31; i >= 0; i--) {
+//        bool val = a & (1 << i);
+//        if (T->ch[1 - val] != NULL)
+//            T = T->ch[1 - val];
+//        else if (T->ch[val] != NULL)
+//            T = T->ch[val];
+//    }
+//    return a ^ (T->val);
+//}
+//    int maxSubarrayXOR(int n, int arr[]) {
+//        Node* T = new Node();
+//        insert(T, 0);
+//        int res = INT_MIN, a = 0;
+//        for (int i = 0; i < n; i++) {
+//            a = a ^ arr[i];
+//            insert(T, a);
+//            res = max(res, query(T, a));
+//        }
+//        return res;
+//}

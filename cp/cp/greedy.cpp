@@ -103,3 +103,34 @@ int makeLargestAndSmallestNumber() {
 	a[i]--, a[0]++;
 	cout << a << " " << b << endl;
 }
+
+//job scheduling problem
+//vector<int> JobScheduling(Job arr[], int n) {
+//	sort(arr, arr + n, [](Job a, Job b) {
+//		return a.profit > b.profit;
+//		});
+//	vector<bool>check(n + 1);
+//
+//	int profit = 0, count = 0;
+//	for (int j = 0; j < n; j++) {
+//		for (int k = min(n, arr[j].dead); k >= 1; k--) {
+//			if (check[k] == 0) {
+//				profit += arr[j].profit;
+//				count++;
+//				check[k] = 1;
+//				break;
+//			}
+//		}
+//	}
+//	return { count, profit };
+//}
+
+//int minJumps(int arr[], int n) {
+//	int end = 0, maxend = 0, count = 0;
+//	for (int i = 0; i < n - 1; i++) {
+//		maxend = max(maxend, arr[i] + i);
+//		if (i >= maxend) return -1;
+//		if (i == end) count++, end = maxend;
+//	}
+//	return count;
+//}

@@ -913,3 +913,62 @@ int largestRectangleArea(vector<int>& A) {
 	}
 	return area;
 }
+
+//max sum subarray with atmost 1 deletion
+int maxSumSubarray(int arr[], int n) {
+
+	vector<int>res = { arr[0] };
+	int sum = arr[0], del = 0;
+
+	for (int i = 1; i < n; i++) {
+		del = max(del + arr[i], sum);
+		sum = max(sum + arr[i], arr[i]);
+		res.push_back(max(del, sum));
+	}
+
+	return *max_element(res.begin(), res.end());
+}
+
+//number of increasing subsequences in an array
+unsigned long long int countSub(int arr[], int n) {
+	unsigned long long int count[10] = { 0 };
+
+	for (int i = 0; i < n; i++) {
+		for (int j = arr[i] - 1; j >= 0; j--)
+			count[arr[i]] += count[j];
+
+		count[arr[i]]++;
+	}
+
+	unsigned long long int res = 0;
+	for (int i = 0; i < 10; i++) {
+		res += count[i];
+	}
+	return res;
+}
+
+
+//josephus problem
+int josephus(int n, int k) {
+	int res = 0;
+	for (int i = 1; i <= n; i++) {
+		res = (res + k) % i;
+	}
+	return res + 1;
+}
+
+//https://practice.geeksforgeeks.org/problems/close-to-perfection1525/1/
+int longestPerfectPiece(int arr[], int n) {
+	multiset<int>s;
+
+	int ans = 0;
+
+	for (int i = 0, j = 0; i < n; i++) {
+		s.insert(arr[i]);
+		while (*s.rbegin() - *s.begin() > 1)
+			s.erase(s.find(arr[j++]));
+
+		ans = max(ans, (int)s.size());
+	}
+	return ans;
+}

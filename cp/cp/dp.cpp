@@ -208,9 +208,10 @@ int fractionalKnapSack(vector<int>profit, vector<int>weights, int capacity) {
 	for (int i = 0; i < n; i++)
 		p[i] = { weights[i], profit[i] };
 	
-	sort(begin(p), end(p), [](pair<double, double> a, pair<double, double>b) { return (double)((double)a.second / (double)a.first) > (double)((double)b.second / (double)b.first); });
-	for (auto c : p)
-		cout << c.first << " " << c.second << "\n";
+	sort(begin(p), end(p), [](auto a, auto b) { 
+		return (double)((double)a.second / (double)a.first) > (double)((double)b.second / (double)b.first); 
+	});
+
 	for (int i = 0; i < n; i++) {
 		if (w + p[i].first <= capacity)
 			w += p[i].first, val += p[i].second;
@@ -847,4 +848,96 @@ int tilingWithDominos(int n) {
 		B[i] = (A[i-1] + B[i-2]) % mod;
 	}
 	return A[n];
+}
+
+//largest zig-zag sequence
+//https://practice.geeksforgeeks.org/problems/largest-zigzag-sequence5416/1#
+int zigzagSequence(int n, vector<vector<int>> M) {
+	int dp[101][101] = {};
+	memset(dp, -1, sizeof dp);
+
+	function<int(int, int)>largest = [&](int i, int j) {
+		if (dp[i][j] != -1)
+			return dp[i][j];
+
+		if (i == n - 1)
+			return dp[i][j] = M[i][j];
+
+		int zzs = 0;
+		for (int k = 0; k < n; k++) {
+			if (k != j)
+				zzs = max(zzs, largest(i + 1, k));
+		}
+		return dp[i][j] = zzs + M[i][j];
+	};
+
+	int res = 0;
+	for (int i = 0; i < n; i++) {
+		res = max(res, largest(0, i));
+	}
+	return res;
+}
+
+//longest common increasing subsequence
+int LCIS(int arr1[], int m, int arr2[], int n) {
+	vector<int>dp(n);
+
+	for (int i = 0; i < m; i++) {
+		int current = 0;
+		for (int j = 0; j < n; j++) {
+			if (arr1[i] == arr2[j])
+				dp[j] = max(dp[j], current + 1);
+
+			if (arr1[i] > arr2[j])
+				current = max(current, dp[j]);
+		}
+	}
+	return *max_element(dp.begin(), dp.end());
+}
+
+//https://practice.geeksforgeeks.org/problems/find-minimum-adjustment-cost-of-an-array4628/1
+int minAdjustmentCost(int arr[], int n, int target) {
+	int M = 100, res = INT_MAX;;
+	vector<vector<int>>dp(n + 1, vector<int>(M + 1));
+	for (int j = 0; j <= M; j++) // new values of array elements
+		dp[0][j] = abs(j - arr[0]);
+	for (int i = 1; i < n; i++) {
+		for (int j = 0; j <= M; j++) {
+			dp[i][j] = INT_MAX;
+			for (int k = max(j - target, 0); k <= min(j + target, M); k++)
+				dp[i][j] = min(dp[i][j], dp[i - 1][k] + abs(arr[i] - j));
+		}
+	}
+	for (int j = 0; j <= M; j++) {
+		res = min(res, dp[n - 1][j]);
+	}
+	return res;
+}
+
+//https://practice.geeksforgeeks.org/problems/maximum-value5946/1
+//Maximize arr[j] – arr[i] + arr[l] – arr[k], such that i < j < k < l
+long long int findMaxValue(long long int arr[], int n) {
+
+	auto max = [](long long int a, long long int b) {
+		return a < b ? b : a;
+	};
+
+	if (n < 4) return -1;
+	int n_inf = INT_MIN;
+
+	vector<int> a(n + 1, n_inf), b(n + 1, n_inf), c(n + 1, n_inf), d(n + 1, n_inf);
+
+	for (int i = n - 1; i >= 0; i--) {
+		a[i] = max(a[i + 1], arr[i]);
+	}
+	for (int i = n - 2; i >= 0; i--) {
+		b[i] = max(b[i + 1], a[i + 1] - arr[i]);
+	}
+	for (int i = n - 3; i >= 0; i--) {
+		c[i] = max(c[i + 1], b[i + 1] + arr[i]);
+	}
+	for (int i = n - 4; i >= 0; i--) {
+		d[i] = max(d[i + 1], c[i + 1] - arr[i]);
+	}
+	return d[0];
 }

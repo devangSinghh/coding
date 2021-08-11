@@ -338,6 +338,49 @@ int shortestPathLength(vector<vector<int>>& graph) {
 	return 0;
 }
 
+//find cycle in undirected graph
+bool isCycle(int V, vector<int>g[]) {
+	vector<bool>visited(V);
+	function<bool(int, int)> dfs = [&](int u, int p) {
+		visited[u] = true;
+		for (auto v : g[u])
+			if (visited[v] == false)
+				if (dfs(v, u))
+					return true;
+			else if (v != p or v == u)
+				return true;
+		return false;
+	};
+	for (int u = 0; u < V; u++)
+		if (visited[u] == false and dfs(u, -1))
+			return true;
+	return false;
+}
+
+//find cycle in undirected graph using Union Find
+bool detectCycleUnionFInd(int n, vector<vector<int>>& B) {
+	vector<int>parent(n + 1, -1);
+
+	function<int(int)> find = [&](int i) {
+		return parent[i] < 0 ? i : parent[i] = find(parent[i]);
+	};
+
+	auto Union = [&](int i, int j) {
+		int pi = find(i);
+		int pj = find(j);
+		parent[pj] = pi;
+	};
+
+	for (auto p : B) {
+		int a = find(p[0]);
+		int b = find(p[1]);
+		if (a == b) return 1;
+		Union(a, b);
+	}
+	return 0;
+}
+
+
 //find cycle in directed graph
 int findCycleInDirectedgraph(int n, vector<vector<int> >& B) {
 	vector<vector<int>>g(n + 1);
@@ -365,4 +408,95 @@ int findCycleInDirectedgraph(int n, vector<vector<int> >& B) {
 		}
 	}
 	return 0;
+}
+
+//shortest distance from source vertex, bellmann ford
+vector<int> bellman_ford(int V, vector<vector<int>> adj, int s) {
+	vector<int>dist(V, 100000000);
+	dist[s] = 0;
+	for (int i = 0; i < V - 1; i++) {
+		bool ok = true;
+		for (auto f : adj) {
+			int u = f[0], v = f[1], w = f[2];
+			if (dist[v] > dist[u] + w) {
+				dist[v] = dist[u] + w;
+				ok = false;
+			}
+		}
+		if (ok) break;
+	}
+	return dist;
+}
+
+//euleiran circuit
+int isEularCircuit(int V, vector<int>adj[]) {
+	// 1 => eulerian path
+	// 2 => eulerian circuit
+	// 0 => none
+
+	int c = 0;
+
+	for (int i = 0; i < V; i++)
+		if (adj[i].size() % 2 == 1)
+			c++;
+
+	if (c == 0) return 2;
+	else if (c == 2) return 1;
+	return 0;
+}
+
+//hamiltonian path
+bool checkHamiltonianPath(int n, int m, vector<vector<int>> edges) {
+	vector<vector<int>>g(n + 1);
+	vector<bool>visited(n + 1);
+	for (auto e : edges) {
+		g[e[0]].push_back(e[1]);	
+		g[e[1]].push_back(e[0]);
+	}
+	function<bool(int, int)> dfs = [&](int u, int count) {
+		if (count == n) return true;
+		visited[u] = true;
+		for (auto v : g[u])
+			if (visited[v] == false)
+				if (dfs(v, count + 1)) return true;
+		visited[u] = false;
+		return false;
+	};
+	for (int i = 1; i <= n; i++)
+		if (dfs(i, 1)) return true;
+	return false;
+}
+
+//biconnected graph => tarjan's algorithm
+int biGraph(int arr[], int n, int e) {
+	vector<vector<int>>g(n);
+	vector<int>DFN(n), dfn_ancestor(n), parent(n, -1), visited(n);
+	for (int i = 0; i < 2 * e - 1; i += 2) {
+		g[arr[i]].push_back(arr[i + 1]);
+		g[arr[i + 1]].push_back(arr[i]);
+	}
+	int dfn = 0;
+	function<bool(int)> dfs = [&](int u) {
+		visited[u] = true, DFN[u] = dfn_ancestor[u] = ++dfn;
+		int children = 0;
+		for (auto v : g[u]) {
+			if (visited[v] == false) {
+				children++;
+				parent[v] = u;
+				if (dfs(v)) return true;
+				dfn_ancestor[u] = min(dfn_ancestor[u], dfn_ancestor[v]);
+				if (parent[u] == 1 and children > 1) return true;
+				if (parent[u] != -1 and dfn_ancestor[v] > DFN[u]) return true;
+			}
+			else if (v != parent[u])
+				dfn_ancestor[u] = min(dfn_ancestor[u], DFN[v]);
+		}
+		return false;
+	};
+	if (dfs(0) == true) return false;
+	for (int i = 0; i < n; i++) {
+		if (visited[i] == false)
+			return false;
+	}
+	return true;
 }
