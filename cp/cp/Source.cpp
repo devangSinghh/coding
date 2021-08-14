@@ -12,6 +12,7 @@
 #include<regex>
 #include <bitset>
 #include <unordered_map>
+#include <functional>
 #include <unordered_set>
 #include <map>
 #include <numeric>
@@ -56,6 +57,33 @@ ll gcd(ll a, ll b) { return b == 0 ? a : gcd(b, a % b); };
 int d2[8][2] = { {0, -1}, {-1, 0}, {0, 1}, {1, 0}, {1, 1}, {-1, 1}, {1, -1}, {-1, -1} };
 int dir[5] = { 0, -1, 0, 1, 0 };
 
+
+//class _rand_ { public: _rand_() { func(); }   void func() { srand((unsigned)time(0)); } };  _rand_ _rno_;
+//
+//                     clock_t _tstart, _tend;
+//
+//                     class ___
+//                     {
+//                     public:
+//                         ___() { b(); }
+//                         ~___() { e(); }
+//                         void b()
+//                         {
+//                             _tstart = clock();
+//#ifndef ONLINE_JUDGE
+//                             freopen("input.txt", "r", stdin);
+//                             freopen("output.txt", "w", stdout);
+//#endif
+//                         }
+//                         void e()
+//                         {
+//                             _tend = clock();
+//#ifndef ONLINE_JUDGE
+//                             nl; nl; cout << "Time Take: " << (double)(_tend - _tstart) / (double)(CLOCKS_PER_SEC) << "s"; nl; nl; nl;
+//#endif
+//                         }
+//                     };
+
 unsigned int divisor_count(unsigned int n) {
     unsigned int total = 1;
     for (; (n & 1) == 0; n >>= 1)
@@ -84,10 +112,32 @@ int GetCeilIndex(vector<int>arr, vector<int>& T, int l, int r, int key) {
     return r;
 }
 
+vector<vector<string>> nqueen(int n) {
+    vector<vector<string>>res;
+    vector<string>board(n, string(n, '.'));
+    vector<bool>col(n), diag1(2 * n - 1), diag2(2 * n - 1);
+
+    static function<void(int)> dfs = [&](int i) {
+        if (i == board.size())
+            res.push_back(board);
+        for (int j = 0; j < n; j++) {
+            if (!col[j] and !diag1[i - j + n - 1] and !diag2[i + j]) {
+                board[i][j] = 'Q';
+                col[j] = diag1[i - j + n - 1] = diag2[i + j] = true;
+                dfs(i + 1);
+                board[i][j] = '.';
+                col[j] = diag1[i - j + n - 1] = diag2[i + j] = false;
+            }
+        }
+    };
+    dfs(0);
+    return res;
+}
+
 
 int main() {
     
-    vector<int>arr = { 1,2,5,3,6,4,1 };
+    /*vector<int>arr = { 1,2,5,3,6,4,1 };
     int n = arr.size();
     vector<vector<int>>L(n);
 
@@ -110,9 +160,10 @@ int main() {
             lis = p;
             mx = p.size();
         }
-    }
+    }*/
 
-    for (auto n : lis)
-        cout << n << " ";
+    auto a = nqueen(8);
+    cout << a.size();
+
 }
 

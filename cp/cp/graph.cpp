@@ -55,10 +55,12 @@ void graph::traverseGraph() {
 	cout << "\n";
 }
 
+
+
 // https://leetcode.com/problems/redundant-connection/
 //theory included : union find
 //start with all elements as their own tree...
-//keep building the tree as until you find the closing edge(edge which will close the loop)...this edge will be the answer 
+//keep building the tree as until you find the closing edge(edge which will close the loop)...this edge will be the answer
 vector<int> graph::findRedundantConnection(vector<vector<int>> edges) {
 	vi parent(edges.size() + 1);
 	vi res;
@@ -98,7 +100,7 @@ void graph::topologicalSort() {
 //space complexity : O(|V| + |E|)
 void graph::dijkstra(int s) {
 	set<pair<int, int>>Set;    //(distance, vertex)
-	vector<int>dist(v, INF);   //initialize all distances to infx	
+	vector<int>dist(v, INF);   //initialize all distances to infx
 	Set.insert({ 0, s });      // insert starting point with current distance as 0 (distance of starting point from itseltf will be 0)
 	dist[s] = 0;               //update the dist vector with starting point distance as 0
 	while (!Set.empty()) {     //start iterting over Set...until it becomes empty
@@ -150,7 +152,7 @@ int dfsForTranspositions(vector<int>goesTo, vector<int>visited, int s) {
 int numberOfTranspositions(vector<int>permutations) {
 	int n = permutations.size(), transpositions = 0, ans = 0;
 	vector<int>visited(n + 1, 0);
-	vector<int>goesTo(n + 1); 
+	vector<int>goesTo(n + 1);
 	for (int i = 1; i <= n; i++)
 		goesTo[permutations[i]] = i + 1;
 
@@ -498,7 +500,7 @@ bool checkHamiltonianPath(int n, int m, vector<vector<int>> edges) {
 	vector<vector<int>>g(n + 1);
 	vector<bool>visited(n + 1);
 	for (auto e : edges) {
-		g[e[0]].push_back(e[1]);	
+		g[e[0]].push_back(e[1]);
 		g[e[1]].push_back(e[0]);
 	}
 	function<bool(int, int)> dfs = [&](int u, int count) {
@@ -548,3 +550,9 @@ int biGraph(int arr[], int n, int e) {
 	}
 	return true;
 }
+
+
+//Bellman Ford algorithm
+//cycle finding in graph containing negative edges
+//https://cses.fi/paste/1e25af9154351b7628f94f/
+

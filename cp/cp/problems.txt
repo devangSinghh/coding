@@ -70,6 +70,19 @@ https://practice.geeksforgeeks.org/problems/mobile-numeric-keypad5456/1/
 Stacks
 https://practice.geeksforgeeks.org/problems/longest-valid-parentheses5657/1#
 
+
+CSES ProblemSet
+https://cses.fi/problemset/task/2431
+https://cses.fi/problemset/result/2675562/
+https://cses.fi/problemset/task/1141
+https://cses.fi/problemset/task/1163
+https://cses.fi/problemset/task/2168
+https://cses.fi/problemset/task/1636/
+https://cses.fi/problemset/task/1746
+https://cses.fi/problemset/task/1140/
+https://cses.fi/problemset/task/1194
+https://cses.fi/problemset/task/1196
+
 dicsuss
 https://leetcode.com/problems/critical-connections-in-a-network/discuss/1293400/Articulation-points-and-DFN-numbering-or-C%2B%2B-easy-understanding-solution
 https://leetcode.com/problems/integer-replacement/discuss/1341564/C%2B%2B-easy-dp-solution

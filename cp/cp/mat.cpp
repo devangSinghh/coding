@@ -2,6 +2,9 @@
 #include "allheaders.h"
 using namespace std;
 
+
+int d2[8][2] = { {0, -1}, {-1, 0}, {0, 1}, {1, 0}, {1, 1}, {-1, 1}, {1, -1}, {-1, -1} };
+
 void print2dVector(vector<vector<int>> v) {
 	for (auto &i : v) {
 		for (int j = 0; j < i.size(); j++)

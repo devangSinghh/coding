@@ -79,6 +79,13 @@ public:
 	}
 };
 
+long long int gcd(long long int a, long long int b) {
+	return b == 0 ? a : gcd(b, a % b); 
+};
+
+//catalan number formula
+// ll _cat(int n)  {  return _nCr(2*n,n)/(n+1);  }
+
 //print a vector
 void print(vector<int>A) {
 	for (auto x : A) cout << x << " ";

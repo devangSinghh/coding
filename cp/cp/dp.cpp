@@ -941,3 +941,19 @@ long long int findMaxValue(long long int arr[], int n) {
 	}
 	return d[0];
 }
+
+//number of ordered set to pay for amount
+// coins aray is given => arr 
+//vector<vector<int>>dp(n + 1, vector<int>(x + 1));
+//dp[0][0] = 1;
+//
+//for (int i = 1; i <= n; i++) {
+//	for (int s = 0; s <= x; s++) {
+//		dp[i][s] = dp[i - 1][s];
+//		if (s >= arr[i - 1]) {
+//			dp[i][s] = (dp[i][s] + dp[i][s - arr[i - 1]]) % mod;
+//		}
+//	}
+//}
+//
+//cout << dp[n][x];
